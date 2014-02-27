@@ -1,6 +1,6 @@
-#include "Analyzer.h"
+#include "Analyzer_Ele.h"
 
-Analyzer::Analyzer() {
+Analyzer_Ele::Analyzer_Ele() {
 
   if (debug) cout<<"inizio"<<endl;
   h_MET = new TH1F("h_MET","Missing Et",300,0.0,300.0);
@@ -23,7 +23,7 @@ Analyzer::Analyzer() {
   h_RelIsoFR = new TH1F("h_RelIsoFR","RelIso FR weight",40,0,0.4);
 
   h_electrons = new ElectronPlots("electrons");
-  h_electronsLoose = new ElectronPlots("loose electrons");
+  h_electronsLoose = new ElectronPlots("loose_electrons");
   h_muons = new MuonPlots("muons");
   h_muonsLoose = new MuonPlots("loose_muons");
   h_LnotT = new MuonPlots("loose_not_tight");
@@ -31,7 +31,6 @@ Analyzer::Analyzer() {
   h_jets = new JetPlots("jets");
   h_jets_veto = new JetPlots("jets_w_veto");
   h_signal = new SignalPlots("signal");
-  h_WZcontrol = new SignalPlots("WZcontrol");
   h_signalMET50 = new SignalPlots("signal_MET50");
   h_signalbTag = new SignalPlots("signal_bTag");
   h_signalTOT = new SignalPlots("signal_TOT");
@@ -52,8 +51,8 @@ Analyzer::Analyzer() {
   h_singlefake = new TH2F("h_singlefake","number of single fakes ",4,0,4,4,-1,3);
   h_doublefake = new TH2F("h_doublefake","number of double fakes ",4,0,4,4,-1,3);
 
-//  TFile *infile = new TFile("/uscms_data/d2/fgior8/LQntuple_11/CMSSW_5_3_8_LQ/src/code/QCD_mu15_v3_FR60_90.root");
-  TFile *infile = new TFile("/uscms_data/d2/fgior8/LQntuple_11/CMSSW_5_3_8_LQ/src/code/Total_FRcorr60_9603.root");
+// TFile *infile = new TFile("/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/QCD_mu15_v3_FR40_31_bis.root");
+  TFile *infile = new TFile("/uscms_data/d2/fgior8/LQntuple_11/CMSSW_5_3_8_LQ/src/code/Total_FRcorr60_51.root");
 
   infile->cd();
   TDirectory *dir=gDirectory;             
@@ -61,16 +60,16 @@ Analyzer::Analyzer() {
   if (debug) cout<<"fine"<<endl;
 }
 
-Analyzer::~Analyzer() { }
+Analyzer_Ele::~Analyzer_Ele() { }
 
-void Analyzer::SetName(TString name, Int_t version) {
+void Analyzer_Ele::SetName(TString name, Int_t version) {
   completename = name + "_";
   completename += version;
   completename += ".root";
   outfile = new TFile(completename,"RECREATE");
 }
 
-void Analyzer::SetWeight(Double_t CrossSection, Double_t nevents) {
+void Analyzer_Ele::SetWeight(Double_t CrossSection, Double_t nevents) {
 
   MCweight = integratedlumi * CrossSection / nevents;
 // lumi *  cs(pb) * gen filter efficiency / MCevents
@@ -78,12 +77,12 @@ void Analyzer::SetWeight(Double_t CrossSection, Double_t nevents) {
  
 }
 
-void Analyzer::SetEvtN(Long64_t events) {
+void Analyzer_Ele::SetEvtN(Long64_t events) {
   events ? entrieslimit=events :  entrieslimit=-1;
   cout<<"events "<<events<<endl<<"entrieslimit "<<entrieslimit<<endl;
 }
 
-void Analyzer::Loop() {
+void Analyzer_Ele::Loop() {
 
   cout << "total number of entries " <<nentries<<endl;
 
@@ -92,7 +91,7 @@ void Analyzer::Loop() {
   Double_t SingleFake=0; Double_t DoubleFake=0; Double_t Single_Double=0;
   Int_t nSingleFake=0; Int_t nDoubleFake=0;
 
-  reweightPU = new ReweightPU("/uscms_data/d2/fgior8/LQntuple_11/CMSSW_5_3_8_LQ/src/code/MC_pu.root", "/uscms_data/d2/fgior8/LQntuple_11/CMSSW_5_3_8_LQ/src/code/MyDataPileupHistogram.root");
+  reweightPU = new ReweightPU("/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/MC_pu.root", "/uscms_data/d2/fgior8/LQntuple_11/CMSSW_5_3_8_LQ/src/code/MyDataPileupHistogram.root");
 
   UInt_t nbinX=FRhisto->GetNbinsX(); UInt_t nbinY=FRhisto->GetNbinsY(); UInt_t nSplit=4;
 
@@ -189,7 +188,7 @@ void Analyzer::Loop() {
     std::vector<TString> triggerslist;
     triggerslist.push_back("HLT_Mu17_TkMu8_v");
 
-//    if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
+    if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
   
     if (MC_pu) {
       /// ***PU reweghting*** ///
@@ -224,32 +223,32 @@ void Analyzer::Loop() {
     }
 
     std::vector<Lepton> muonTightColl;
-    MuonTight.SetPt(10); 
+    MuonTight.SetPt(20); 
     MuonTight.SetEta(2.4);
     MuonTight.SetRelIso(0.10);
     MuonTight.SetChiNdof(10); 
-    MuonTight.SetBSdxy(0.010);
+    MuonTight.SetBSdxy(0.005);
     MuonTight.SetBSdz(0.10);
     MuonTight.SetDeposits(4.0,6.0);
     MuonTight.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonStationMatches, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonTightColl);
 
     std::vector<Lepton> muonLooseButNOTightColl;
-    MuonLooseButNOTight.SetPt(10);
+    MuonLooseButNOTight.SetPt(20);
     MuonLooseButNOTight.SetEta(2.4);
     MuonLooseButNOTight.SetRelIso(0.10,0.40);
     MuonLooseButNOTight.SetChiNdof(10,50);
-    MuonLooseButNOTight.SetBSdxy(0.010,0.20);
+    MuonLooseButNOTight.SetBSdxy(0.005,0.20);
     MuonLooseButNOTight.SetBSdz(0.10);
     MuonLooseButNOTight.SetDeposits(4.0,6.0);
     MuonLooseButNOTight.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonStationMatches, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonLooseButNOTightColl);
 
     std::vector<Lepton> muonLooseColl;
-    MuonLoose.SetPt(10);
+    MuonLoose.SetPt(20);
     MuonLoose.SetEta(2.4);
     MuonLoose.SetRelIso(0.40);
     MuonLoose.SetChiNdof(50);
     MuonLoose.SetBSdxy(0.20);
-    MuonLoose.SetBSdz(0.10);
+    MuonLoose.SetBSdz(1.00);
     MuonLoose.SetDeposits(4.0,6.0);
     MuonLoose.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonStationMatches, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonLooseColl);
 
@@ -260,39 +259,20 @@ void Analyzer::Loop() {
     MuonVeto.SetChiNdof(500);
     MuonVeto.SetBSdxy(20.00);
     MuonVeto.SetBSdz(100.00);
-    MuonVeto.SetDeposits(400.0,600.0);
+    MuonVeto.SetDeposits(4.0,6.0);
     MuonVeto.LooseMuonSelection(*MuonIsPF, *MuonIsTracker, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonStationMatches, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonVetoColl);
 
     std::vector<Lepton> electronTightColl;
-    ElectronTight.SetPt(10); 
-    ElectronTight.SetEta(2.5); 
+    ElectronTight.SetPt(20); 
+    ElectronTight.SetEta(2.4); 
     ElectronTight.SetRelIso(0.15); 
     ElectronTight.SetBSdxy(0.02); 
     ElectronTight.SetBSdz(0.10);
     ElectronTight.ElectronSelection(*ElectronIsEB, *ElectronIsEE, *ElectronHasTrackerDrivenSeed, *ElectronHasEcalDrivenSeed, *ElectronEta, *ElectronPhi, *ElectronPt, *ElectronEnergy, *ElectronPFPhotonIso03, *ElectronPFNeutralHadronIso03, *ElectronPFChargedHadronIso03, *ElectronCharge, *ElectronGsfCtfScPixCharge, *ElectronMissingHitsEG, *ElectronHasMatchedConvPhot, *ElectronDeltaEtaTrkSC, *ElectronDeltaPhiTrkSC, *ElectronSigmaIEtaIEta, *ElectronHoE, *ElectronCaloEnergy, *ElectronESuperClusterOverP, *ElectronTrackVx, *ElectronTrackVy, *ElectronTrackVz, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), rhoJets, electronTightColl);
     
-///// Muon cleaning from Jet /////
-/*
-    std::vector<Lepton> muonJetCleanColl;
-    for (UInt_t lll=0; lll<muonTightColl.size(); lll++) {
-      muonbad = true;
-      for (UInt_t jjj=0; jjj<jetColl.size(); jjj++) {
- 	if (muonTightColl[lll].lorentzVec().DeltaR( jetColl[jjj].lorentzVec() ) < 0.4) {
-	  muonbad = true;
-	  break;
-        }
-      }
-      if (!muonbad)
-        muonJetCleanColl.push_back(muonTightColl[lll]);
-    }	
-    if ((muonJetCleanColl.size()==muonTightColl.size() || muonJetCleanColl.size()==1) && muonJetCleanColl.size()!=0) {
-	cout << "DIVERSOOOOOOO" <<endl; 
-        cout << "size() " << muonJetCleanColl.size() <<endl;
-    }
-*/  
     std::vector<Jet> jetVetoColl;
-    JetsVeto.SetPt(20); 
-    JetsVeto.SetEta(2.5);
+    JetsVeto.SetPt(30); 
+    JetsVeto.SetEta(2.4);
     JetsVeto.JetSelectionLeptonVeto(*PFJetPassLooseID, *PFJetEta, *PFJetPhi, *PFJetPt, *PFJetEnergy, *PFJetNeutralEmEnergyFraction, *PFJetNeutralHadronEnergyFraction, *PFJetChargedEmEnergyFraction, *PFJetChargedHadronEnergyFraction, *PFJetChargedMultiplicity, *PFJetNConstituents, *PFJetCombinedSecondaryVertexBTag, *PFJetClosestVertexWeighted3DSeparation, electronTightColl, muonLooseColl, jetVetoColl);
 
     if (debug) cout<<"Selection done"<<endl;
@@ -336,28 +316,6 @@ void Analyzer::Loop() {
 	  b_found = true;
       }	 
     }  
-
-    MET = PFMETType01XYCor->at(0); 
-    h_MET->Fill(MET, weight);
-    h_METsign->Fill(PFMETSigType01XYCor->at(0), weight);
-/*
-    ///// WZ control region /////
-    Double_t tmpZcand=0;
-    Double_t Zcand=0;
-    if (!b_found && MET>50 && muonVetoColl.size()==3 && jetVetoColl.size() >= 2) {
-      if (muonTightColl.size() == 3) {
-        for (UInt_t l1=0; l1<muonTightColl.size()-1; l1++)
-          for (UInt_t l2=1; l2<muonTightColl.size(); l2++) {
-            if (muonTightColl[l1].charge()!=muonTightColl[l2].charge()) 
-              tmpZcand = (muonTightColl[l1].lorentzVec()+muonTightColl[l2].lorentzVec()).M();
-            if (fabs(tmpZcand-Mass_Z) < fabs(Zcand-Mass_Z))
-              Zcand=tmpZcand;
-          }
-      if (fabs(Zcand-Mass_Z) < 15)
-        h_WZcontrol->Fill(MET, muonTightColl, jetVetoColl, weight, true, false);
-      }
-    }
-*/
     Double_t Wpair=999.9;
     Double_t temp_Wpair=999.9;
     Double_t lljj=999.9;
@@ -374,12 +332,14 @@ void Analyzer::Loop() {
           }
         }
     }
-
-    //if (Wpair<50 || Wpair>120) continue;
+    if (Wpair<60 || Wpair>110) continue;
     //if (Wpair>100 || lljj>200 || lljj<40) continue;
-    if (Wpair>150) continue;
+    //if (Wpair>150) continue;
     //if (lljj>250) continue;
     ///// END STANDARD PLOTS /////
+    MET = PFMETType01XYCor->at(0); 
+    h_MET->Fill(MET, weight);
+    h_METsign->Fill(PFMETSigType01XYCor->at(0), weight);
 
     /// ***simple check for double muon invariant mass and 3rd lepton Z veto*** ///
     Double_t masslow=999.9;
@@ -402,31 +362,10 @@ void Analyzer::Loop() {
     }    
     if (mass3rd > (Mass_Z-15) && mass3rd < (Mass_Z+15) ) continue;
     if ( muonVetoColl.size()>2 ) continue;
-    //if ( jetVetoColl.size()>4 ) continue;
+    if ( jetVetoColl.size()>4 ) continue;
     METcut = 50;
 
-    ///// Here we loook at the spectrum of the fake objects ////////
-    std::vector<Jet> jetColl;
-    JetsVeto.SetPt(10);
-    JetsVeto.SetEta(3.0);
-    JetsVeto.JetSelection(*PFJetPassLooseID, *PFJetEta, *PFJetPhi, *PFJetPt, *PFJetEnergy, *PFJetNeutralEmEnergyFraction, *PFJetNeutralHadronEnergyFraction, *PFJetChargedEmEnergyFraction, *PFJetChargedHadronEnergyFraction, *PFJetChargedMultiplicity, *PFJetNConstituents, *PFJetCombinedSecondaryVertexBTag, *PFJetClosestVertexWeighted3DSeparation, jetColl);
-
-    if (jetVetoColl.size() >= 2 && jetColl.size() > 0 && muonLooseButNOTightColl.size() == 1 && muonTightColl.size() == 1 && muonLooseButNOTightColl[0].charge()==muonTightColl[0].charge()) {
-      //for (UInt_t i=0; i<jetColl.size(); i++)
-        for (UInt_t j=0; j<muonLooseButNOTightColl.size(); j++) {
-          //if (jetColl[i].lorentzVec().DeltaR( muonLooseColl[j].lorentzVec() ) > 1.0 && jetColl[i].lorentzVec().Pt()>40)
-            for (UInt_t m=0; m<jetColl.size(); m++) {
-              if (jetColl[m].lorentzVec().DeltaR( muonLooseButNOTightColl[j].lorentzVec() ) < 0.3) {
-                index=jetColl[m].ijet();
-                h_jets->Fill( weight, (Int_t) jetColl.size(), jetColl[m].lorentzVec().Pt(), jetColl[m].eta(), jetColl[m].lorentzVec().Phi(), PFJetTrackCountingHighPurBTag->at(index), PFJetJetProbabilityBTag->at(index), jetColl[m].btag_disc(), PFJetClosestVertexWeightedXYSeparation->at(index), PFJetClosestVertexWeightedZSeparation->at(index), PFJetClosestVertexWeighted3DSeparation->at(index) );
-                goto end;
-              }
-            }
-        }
-    }
-    end:
-
-    ///// SIGNAL and CONTROL region/////
+       ///// SIGNAL and CONTROL region/////
     if (debug) cout<<"Signal selection"<<endl;
 
     VETO=false;
@@ -612,11 +551,6 @@ void Analyzer::Loop() {
   h_signalTOT->Write();
   outfile->cd();
 
-  Dir = outfile->mkdir("WZcontrol");
-  outfile->cd( Dir->GetName() );
-  h_WZcontrol->Write();
-  outfile->cd();
-
   Dir = outfile->mkdir("SingleFakes");
   outfile->cd( Dir->GetName() );
   h_singlefakes->Write();
@@ -657,11 +591,6 @@ void Analyzer::Loop() {
   Dir = outfile->mkdir("Jets_with_veto");
   outfile->cd( Dir->GetName() );
   h_jets_veto->Write();
-  outfile->cd();
-
-  Dir = outfile->mkdir("Jets_fakes");
-  outfile->cd( Dir->GetName() );
-  h_jets->Write();
   outfile->cd();
 
   outfile->Close();

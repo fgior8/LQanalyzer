@@ -64,7 +64,7 @@ void EffCalculator::LoopEff() {
 
     if (passBadEESupercrystalFilter || passEcalDeadCellBoundaryEnergyFilter || passEcalDeadCellTriggerPrimitiveFilter || passEcalLaserCorrFilter) continue;
 
-    if (!passHBHENoiseFilter || passHcalLaserEventFilter) continue;
+    if (!passHBHENoiseFilter) continue; // || passHcalLaserEventFilter) continue;
 
     std::vector<TString> triggerslist;
     triggerslist.push_back("HLT_Mu17_TkMu8_v");
@@ -99,7 +99,7 @@ void EffCalculator::LoopEff() {
     MuonLoose.SetBSdxy(0.20); 
     MuonLoose.SetBSdz(0.10);
     MuonLoose.SetDeposits(4.0, 6.0);
-    MuonLoose.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR04ChargedHadron, *MuonPFIsoR04NeutralHadron, *MuonPFIsoR04Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonGlobalTrkValidHits, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR04PU, muonLooseColl);
+    MuonLoose.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonGlobalTrkValidHits, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonLooseColl);
 
     if (debug) cout<< "Event number " <<jentry<<endl;
     
@@ -111,7 +111,7 @@ void EffCalculator::LoopEff() {
     MuonTight.SetBSdxy(0.02); 
     MuonTight.SetBSdz(0.10);
     MuonTight.SetDeposits(4.0,6.0);
-    MuonTight.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR04ChargedHadron, *MuonPFIsoR04NeutralHadron, *MuonPFIsoR04Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonGlobalTrkValidHits, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR04PU, muonTightColl);
+    MuonTight.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonGlobalTrkValidHits, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonTightColl);
 
     std::vector<Lepton> muonProbeColl;
     Probe.SetPt(10);
@@ -171,14 +171,14 @@ void EffCalculator::LoopEff() {
     if (muonLooseColl.size() > 0) {
       for (UInt_t i=0; i<muonLooseColl.size(); i++) {
         index=muonLooseColl[i].ilepton();
-        h_muonsLoose->Fill(weight, (Int_t) muonLooseColl.size(), muonLooseColl[i].lorentzVec().Pt(), muonLooseColl[i].eta(), muonLooseColl[i].lorentzVec().Phi(), muonLooseColl[i].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR04Photon->at(index), MuonPFIsoR04ChargedHadron->at(index), MuonPFIsoR04NeutralHadron->at(index), muonLooseColl[i].chiNdof(), muonLooseColl[i].dxy_BS(), muonLooseColl[i].dz_BS(), MuonPFIsoR04PU->at(index), rhoJets);
+        h_muonsLoose->Fill(weight, (Int_t) muonLooseColl.size(), muonLooseColl[i].lorentzVec().Pt(), muonLooseColl[i].eta(), muonLooseColl[i].lorentzVec().Phi(), muonLooseColl[i].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR03Photon->at(index), MuonPFIsoR03ChargedHadron->at(index), MuonPFIsoR03NeutralHadron->at(index), muonLooseColl[i].chiNdof(), muonLooseColl[i].dxy_BS(), muonLooseColl[i].dz_BS(), MuonPFIsoR03PU->at(index), rhoJets);
       }
     }
 
     if (muonTightColl.size() > 0) {
       for (UInt_t i=0; i<muonTightColl.size(); i++) {
 	index=muonTightColl[i].ilepton();
-	h_muons->Fill(weight, (Int_t) muonTightColl.size(), muonTightColl[i].lorentzVec().Pt(), muonTightColl[i].eta(), muonTightColl[i].lorentzVec().Phi(), muonTightColl[i].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR04Photon->at(index), MuonPFIsoR04ChargedHadron->at(index), MuonPFIsoR04NeutralHadron->at(index), muonTightColl[i].chiNdof(), muonTightColl[i].dxy_BS(), muonTightColl[i].dz_BS(), MuonPFIsoR04PU->at(index), rhoJets);
+	h_muons->Fill(weight, (Int_t) muonTightColl.size(), muonTightColl[i].lorentzVec().Pt(), muonTightColl[i].eta(), muonTightColl[i].lorentzVec().Phi(), muonTightColl[i].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR03Photon->at(index), MuonPFIsoR03ChargedHadron->at(index), MuonPFIsoR03NeutralHadron->at(index), muonTightColl[i].chiNdof(), muonTightColl[i].dxy_BS(), muonTightColl[i].dz_BS(), MuonPFIsoR03PU->at(index), rhoJets);
 	//	if (muonTightColl[i].fakeType() == Lepton::unknown && Muon_Gen_Mother[index]!=999) cout<<"SCONOSCIUTO!!!!!"<<" pdgID "<<Muon_Gen_Mother[index]<<endl;
       }	 
     }
@@ -209,7 +209,7 @@ void EffCalculator::LoopEff() {
         h_nEvents->Fill(fabs(muonTightColl[iii].eta()),muonTightColl[iii].lorentzVec().Pt(), weight);
         UInt_t index=muonTightColl[iii].ilepton();
         index=muonTightColl[iii].ilepton();
-        h_TLnum->Fill(weight, (Int_t) muonTightColl.size(), muonTightColl[iii].lorentzVec().Pt(), muonTightColl[iii].eta(), muonTightColl[iii].lorentzVec().Phi(), muonTightColl[iii].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR04Photon->at(index), MuonPFIsoR04ChargedHadron->at(index), MuonPFIsoR04NeutralHadron->at(index), muonTightColl[iii].chiNdof(), muonTightColl[iii].dxy_BS(), muonTightColl[iii].dz_BS(), MuonPFIsoR04PU->at(index), rhoJets);
+        h_TLnum->Fill(weight, (Int_t) muonTightColl.size(), muonTightColl[iii].lorentzVec().Pt(), muonTightColl[iii].eta(), muonTightColl[iii].lorentzVec().Phi(), muonTightColl[iii].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR03Photon->at(index), MuonPFIsoR03ChargedHadron->at(index), MuonPFIsoR03NeutralHadron->at(index), muonTightColl[iii].chiNdof(), muonTightColl[iii].dxy_BS(), muonTightColl[iii].dz_BS(), MuonPFIsoR03PU->at(index), rhoJets);
       }
     }
     if ( Zselection(muonLooseColl, PFMET->at(0)) ) {
@@ -217,7 +217,7 @@ void EffCalculator::LoopEff() {
       for (UInt_t iii=0; iii<muonLooseColl.size(); iii++) {
         h_nEventsFO->Fill(fabs(muonLooseColl[iii].eta()),muonLooseColl[iii].lorentzVec().Pt(), weight);
         index=muonLooseColl[iii].ilepton();
-        h_TLden->Fill(weight, (Int_t) muonLooseColl.size(), muonLooseColl[iii].lorentzVec().Pt(), muonLooseColl[iii].eta(), muonLooseColl[iii].lorentzVec().Phi(), muonLooseColl[iii].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR04Photon->at(index), MuonPFIsoR04ChargedHadron->at(index), MuonPFIsoR04NeutralHadron->at(index), muonLooseColl[iii].chiNdof(), muonLooseColl[iii].dxy_BS(), muonLooseColl[iii].dz_BS(), MuonPFIsoR04PU->at(index), rhoJets);
+        h_TLden->Fill(weight, (Int_t) muonLooseColl.size(), muonLooseColl[iii].lorentzVec().Pt(), muonLooseColl[iii].eta(), muonLooseColl[iii].lorentzVec().Phi(), muonLooseColl[iii].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR03Photon->at(index), MuonPFIsoR03ChargedHadron->at(index), MuonPFIsoR03NeutralHadron->at(index), muonLooseColl[iii].chiNdof(), muonLooseColl[iii].dxy_BS(), muonLooseColl[iii].dz_BS(), MuonPFIsoR03PU->at(index), rhoJets);
       }
     }
 

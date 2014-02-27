@@ -16,6 +16,12 @@ void Lep::SetPt(Double_t minPt, Double_t maxPt) {
 
 void Lep::SetEta(Double_t Eta) {
   Eta ? eta_cut=Eta : eta_cut=3.0;
+  eta_cut_min=0.0;
+}
+
+void Lep::SetEta(Double_t minEta, Double_t Eta) {
+  minEta ? eta_cut_min=minEta : eta_cut_min=0.0;
+  Eta ? eta_cut=Eta : eta_cut=3.0;
 }
 
 void Lep::SetRelIso(Double_t RelIso) {

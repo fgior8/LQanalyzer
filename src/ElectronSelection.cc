@@ -66,12 +66,12 @@ void ElectronSel::ElectronSelection(std::vector<Bool_t> isEB, std::vector<Bool_t
     }
     */
     leptonType = Lepton::Electron;
-
+/*
     ifid = (fabs(Eta[ilep]) < 1.479) ? 0 : 1;
     ElTkIso   = TrkIso[ilep] - AreaTrackerEle[ifid] * rho;
     ElEcalIso = ECalIso[ilep] - AreaEcalEle[ifid]  * rho;
     ElHcalIso = HCalIso[ilep] - AreaHcalEle[ifid] * rho;
-
+*/
     if (fabs(Eta[ilep]) < 1.0) ifid = 0;
     else if (fabs(Eta[ilep]) < 1.479) ifid = 1;
     else if (fabs(Eta[ilep]) < 2.0) ifid = 2;

@@ -58,7 +58,7 @@ void getFakerate(TH1F* h1, TH1F* h2, TH1F* out, int nbinX) {
    }
 }
 
-void FunzioProva(std::vector<Lepton>& leptonColli, UInt_t &ilep, std::vector<Lepton>& leptonCollj, UInt_t &jlep, Double_t ****fakeN) {
+void DoubleANDSinglebkg(std::vector<Lepton>& leptonColli, UInt_t &ilep, std::vector<Lepton>& leptonCollj, UInt_t &jlep, Double_t *****fakeN, UInt_t &type) {
 /*
   double arrayeta[] = {0.0,1.0,1.479,2.0,2.5};
   if (pT35) 
@@ -112,11 +112,11 @@ void FunzioProva(std::vector<Lepton>& leptonColli, UInt_t &ilep, std::vector<Lep
       j1++;
     }
   }
-
-  fakeN[i1-1][j1-1][i0-1][j0-1]+=1;
+  fakeN[0][i1-1][j1-1][i0-1][j0-1]+=1;
+  fakeN[type][i1-1][j1-1][i0-1][j0-1]+=1;
 }
 
-double DoublebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, UInt_t &jlep, Double_t ****fakeN, Double_t weight) {
+double DoublebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, UInt_t &jlep, Double_t *****fakeN, UInt_t &type, Double_t weight) {
   double bkg=0;
 
   int i0=1; int j0=1;
@@ -163,7 +163,8 @@ double DoublebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t 
   //double deltaA = fakerate->GetBinError(i0,j0);
   //double deltaB = fakerate->GetBinError(i1,j1);
   
-  fakeN[i0-1][j0-1][i1-1][j1-1]+=weight;
+  fakeN[0][i0-1][j0-1][i1-1][j1-1]+=weight;
+  fakeN[type][i0-1][j0-1][i1-1][j1-1]+=weight;
 
   bkg = A*B / (( 1-A )*( 1-B ));
   //errbkg = sqrt ( ( B*(1-B)*deltaA+A*(1-A)*deltaB )/( pow(1-A,2)*pow(1-B,2) ) );
@@ -171,14 +172,14 @@ double DoublebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t 
   return bkg;
 }
 
-double SinglebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, Double_t **fakeN, Double_t weight) {
+double SinglebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, Double_t ***fakeN, UInt_t &type, Double_t weight) {
   double bkg=0;
   
   int i=1; int j=1;
   double eta= fabs(leptonColl[ilep].eta());
   double Pt = leptonColl[ilep].lorentzVec().Pt();
   if (eta<0.0 || eta>=2.5) {cout<<"CACCHIO eta!!!! "<<eta<<endl; eta<0.0 ? eta=0.0 : eta=2.49;}
-  if (Pt<10.0) {cout<<"CACCHIO Pt!!!! "<<Pt<<endl; Pt=10.0;}
+  if (Pt<20.0) {cout<<"CACCHIO Pt!!!! "<<Pt<<endl; Pt=10.0;}
 
   while(1) {
     if( arrayeta[(i-1)%(ninteta+1)]<=eta && eta<arrayeta[i%(ninteta+1)] )
@@ -188,21 +189,21 @@ double SinglebackGround(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t 
   if (Pt>=arraypT[nintpT]) j=nintpT;
   else {
     while(1) {
-      if( arraypT[(j-1)%(nintpT+1)]<=Pt && Pt<arraypT[j%nintpT+1] ) 
+      if( arraypT[(j-1)%(nintpT+1)]<=Pt && Pt<arraypT[j%(nintpT+1)] ) 
 	break;
       j++;
     }
   }
-
-  fakeN[i-1][j-1]+=weight;
+  fakeN[0][i-1][j-1]+=weight;
+  fakeN[type][i-1][j-1]+=weight;
 
   bkg = fakerate->GetBinContent(i,j) /( 1-fakerate->GetBinContent(i,j) );
   //errbkg = fakerate->GetBinError(i,j) / pow( 1-fakerate->GetBinContent(i,j),2 );
-  
+
   return bkg; 
 }
 
-double Single_Doublebkg(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, UInt_t &jlep) {
+double DoubleTOSinglebkg(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t &ilep, UInt_t &jlep) {
   double bkg=0;
 
   int i0=1; int j0=1;
@@ -253,52 +254,54 @@ double Single_Doublebkg(TH2F* fakerate, std::vector<Lepton>& leptonColl, UInt_t 
 }
 
 
-void BackGroundEstimate(TH2F* fakerate,  Double_t **fakeN1, Double_t ****prova, Double_t ****fakeN2, Double_t &singolo, Double_t &errsingolo, Double_t &doppio, Double_t &errdoppio, Double_t &singoloreale, Double_t &errsingoloreale, Double_t &doppioreale, Double_t &totale, Double_t &doubletosingle, Double_t &errdoubletosingle) {
+void BackGroundEstimate(TH2F* fakerate,  Double_t ***fakeN1, Double_t *****prova, Double_t *****fakeN2, Double_t *singolo, Double_t *errsingolo, Double_t *doppio, Double_t *errdoppio, Double_t *singoloreale, Double_t *errsingoloreale, Double_t *doppioreale, Double_t *totale, Double_t *doubletosingle, Double_t *errdoubletosingle) {
   UInt_t nbinX=fakerate->GetNbinsX(); UInt_t nbinY=fakerate->GetNbinsY();
   Double_t tmperrsingolo, tmperrdoppio, tmperrsingoloreale, tmpdoubletosinglerr;
-  tmperrsingolo=tmperrdoppio=tmperrsingoloreale=tmpdoubletosinglerr=0;
-  for (UInt_t i=1; i<nbinX+1; i++)
-    for (UInt_t j=1; j<nbinY+1; j++) {
-      if (fakeN1[i-1][j-1]) {
-	Double_t FR = fakerate->GetBinContent(i,j);
-	Double_t deltaFR = fakerate->GetBinError(i,j);
-	singolo+=fakeN1[i-1][j-1]*FR/(1-FR);
-	tmperrsingolo+=pow(fakeN1[i-1][j-1],2)*pow( (deltaFR/pow( (1-FR) ,2)) ,2) + fakeN1[i-1][j-1]*pow(FR/(1-FR),2);
-      }
-      for (UInt_t m=1; m<nbinX+1; m++)
-	for (UInt_t n=1; n<nbinY+1; n++) {
-	  if (fakeN2[i-1][j-1][m-1][n-1]) {
-	    Double_t FRi = fakerate->GetBinContent(i,j);
-	    Double_t deltaFRi = fakerate->GetBinError(i,j);
-	    Double_t FRm = fakerate->GetBinContent(m,n);
-	    Double_t deltaFRm = fakerate->GetBinError(m,n);
-	    Double_t W = FRi*FRm / ((1-FRi)*(1-FRm));
-	    Double_t deltaW = sqrt( ( pow(FRi*(1-FRi), 2)*pow(deltaFRm,2) + pow(FRm*(1-FRm), 2)*pow(deltaFRi,2 ) ) / ( pow( (1-FRi) ,4)*pow( (1-FRm) ,4) ) );
-	    doppio+=fakeN2[i-1][j-1][m-1][n-1]*W;
-	    tmperrdoppio+=pow(fakeN2[i-1][j-1][m-1][n-1],2)*pow(deltaW,2) + fakeN2[i-1][j-1][m-1][n-1]*pow(W,2);
-          }  
-          if (fakeN2[i-1][j-1][m-1][n-1] || prova[i-1][j-1][m-1][n-1]) {
+  for (UInt_t z=0; z<4; z++) {
+    tmperrsingolo=tmperrdoppio=tmperrsingoloreale=tmpdoubletosinglerr=0;
+    for (UInt_t i=1; i<nbinX+1; i++)
+      for (UInt_t j=1; j<nbinY+1; j++) {
+	if (fakeN1[z][i-1][j-1]) {
+	  Double_t FR = fakerate->GetBinContent(i,j);
+	  Double_t deltaFR = fakerate->GetBinError(i,j);
+	  singolo[z]+=fakeN1[z][i-1][j-1]*FR/(1-FR);
+	  tmperrsingolo+=pow(fakeN1[z][i-1][j-1],2)*pow( (deltaFR/pow( (1-FR) ,2)) ,2) + fakeN1[z][i-1][j-1]*pow(FR/(1-FR),2);
+	}
+	for (UInt_t m=1; m<nbinX+1; m++)
+	  for (UInt_t n=1; n<nbinY+1; n++) {
+	    if (fakeN2[z][i-1][j-1][m-1][n-1]) {
+	      Double_t FRi = fakerate->GetBinContent(i,j);
+	      Double_t deltaFRi = fakerate->GetBinError(i,j);
+	      Double_t FRm = fakerate->GetBinContent(m,n);
+	      Double_t deltaFRm = fakerate->GetBinError(m,n);
+	      Double_t W = FRi*FRm / ((1-FRi)*(1-FRm));
+	      Double_t deltaW = sqrt( ( pow(FRi*(1-FRi), 2)*pow(deltaFRm,2) + pow(FRm*(1-FRm), 2)*pow(deltaFRi,2 ) ) / ( pow( (1-FRi) ,4)*pow( (1-FRm) ,4) ) );
+	      doppio[z]+=fakeN2[z][i-1][j-1][m-1][n-1]*W;
+	      tmperrdoppio+=pow(fakeN2[z][i-1][j-1][m-1][n-1],2)*pow(deltaW,2) + fakeN2[z][i-1][j-1][m-1][n-1]*pow(W,2);
+	    }  
+	    if (fakeN2[z][i-1][j-1][m-1][n-1] || prova[z][i-1][j-1][m-1][n-1]) {
             Double_t FRi = fakerate->GetBinContent(i,j);
             Double_t FRm = fakerate->GetBinContent(m,n);
             Double_t deltaFRi = fakerate->GetBinError(i,j);
             Double_t deltaFRm = fakerate->GetBinError(m,n);
-	    Double_t singolorealetmp= FRi/(1-FRi) * ( prova[i-1][j-1][m-1][n-1] - ( fakeN2[i-1][j-1][m-1][n-1] * ( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm)) ) );
-            singoloreale+= FRi/(1-FRi) * ( prova[i-1][j-1][m-1][n-1] - ( fakeN2[i-1][j-1][m-1][n-1] * ( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm)) ) );
-            tmperrsingoloreale+=pow(prova[i-1][j-1][m-1][n-1], 2)*pow(deltaFRi/pow(1-FRi,2), 2) + prova[i-1][j-1][m-1][n-1]*pow(FRi/(1-FRi), 2) + pow(fakeN2[i-1][j-1][m-1][n-1], 2)*(pow(FRm-1, 2)*pow(FRm+FRi*(2-3*FRm), 2)*pow(deltaFRi,2) + pow(FRi-1, 4)*pow(FRi, 2)*pow(deltaFRm,2)) / (pow( (FRi-1) ,6)*pow( (FRm-1) ,4)) + fakeN2[i-1][j-1][m-1][n-1]*pow( (( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm)))*FRi/(1-FRi) ,2);
-            Double_t doppiorealetmp= FRi*FRm*fakeN2[i-1][j-1][m-1][n-1] / ((1-FRi)*(1-FRm));
-            doppioreale+= FRi*FRm*fakeN2[i-1][j-1][m-1][n-1] / ((1-FRi)*(1-FRm));
-            totale+=singolorealetmp + doppiorealetmp;
+	    Double_t singolorealetmp= FRi/(1-FRi) * ( prova[z][i-1][j-1][m-1][n-1] - ( fakeN2[z][i-1][j-1][m-1][n-1] * ( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm)) ) );
+            singoloreale[z]+= FRi/(1-FRi) * ( prova[z][i-1][j-1][m-1][n-1] - ( fakeN2[z][i-1][j-1][m-1][n-1] * ( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm)) ) );
+            tmperrsingoloreale+=pow(prova[z][i-1][j-1][m-1][n-1], 2)*pow(deltaFRi/pow(1-FRi,2), 2) + prova[z][i-1][j-1][m-1][n-1]*pow(FRi/(1-FRi), 2) + pow(fakeN2[z][i-1][j-1][m-1][n-1], 2)*(pow(FRm-1, 2)*pow(FRm+FRi*(2-3*FRm), 2)*pow(deltaFRi,2) + pow(FRi-1, 4)*pow(FRi, 2)*pow(deltaFRm,2)) / (pow( (FRi-1) ,6)*pow( (FRm-1) ,4)) + fakeN2[z][i-1][j-1][m-1][n-1]*pow( (( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm)))*FRi/(1-FRi) ,2);
+            Double_t doppiorealetmp= FRi*FRm*fakeN2[z][i-1][j-1][m-1][n-1] / ((1-FRi)*(1-FRm));
+            doppioreale[z]+= FRi*FRm*fakeN2[z][i-1][j-1][m-1][n-1] / ((1-FRi)*(1-FRm));
+            totale[z]+=singolorealetmp + doppiorealetmp;
 
-	    doubletosingle += fakeN2[i-1][j-1][m-1][n-1] * ( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm));
-	    tmpdoubletosinglerr += fakeN2[i-1][j-1][m-1][n-1]*pow(( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm)),2) + pow(fakeN2[i-1][j-1][m-1][n-1]*deltaFRi/pow(1-FRi,2),2) + pow(fakeN2[i-1][j-1][m-1][n-1]*deltaFRm/pow(1-FRm,2),2);
-	  }
+	    doubletosingle[z] += fakeN2[z][i-1][j-1][m-1][n-1] * ( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm));
+	    tmpdoubletosinglerr += fakeN2[z][i-1][j-1][m-1][n-1]*pow(( FRm*(1-FRi)+FRi*(1-FRm) ) / ((1-FRi)*(1-FRm)),2) + pow(fakeN2[z][i-1][j-1][m-1][n-1]*deltaFRi/pow(1-FRi,2),2) + pow(fakeN2[z][i-1][j-1][m-1][n-1]*deltaFRm/pow(1-FRm,2),2);
+	    }
 	  
-	}
+	  }
     }
-  errsingoloreale=sqrt(tmperrsingoloreale);
-  errsingolo=sqrt(tmperrsingolo);
-  errdoppio=sqrt(tmperrdoppio);
-  errdoubletosingle=sqrt(tmpdoubletosinglerr);
+    errsingoloreale[z]=sqrt(tmperrsingoloreale);
+    errsingolo[z]=sqrt(tmperrsingolo);
+    errdoppio[z]=sqrt(tmperrdoppio);
+    errdoubletosingle[z]=sqrt(tmpdoubletosinglerr);
+  }
 }
 
 void WeigthedMean(std::vector<double>& value, std::vector<double>& error, double &mean, double &stddev) {

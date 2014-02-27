@@ -26,7 +26,8 @@ void GenSel::GenSelection(std::vector<Double_t> Eta, std::vector<Double_t> Pt, s
     looseTight = GenParticle::Other;
     leptonType = GenParticle::Muon;
 
-    if ( fabs(pdgId[mother[ilep]])!=24 || status[ilep]!=3 || pdgId[mother[mother[ilep]]]!=90 ) continue;
+//    if ( fabs(pdgId[mother[ilep]])!=24 || status[ilep]!=3 || pdgId[mother[mother[ilep]]]!=90 ) continue;
+    if ( fabs(pdgId[ilep]==13) && fabs(pdgId[mother[ilep]])==24 || status[ilep]==3 || fabs(pdgId[mother[ilep]])==23 ) continue;
   //  cout << "idx "<< ilep << " pdgID  " << pdgId[ilep] << "  madre " << mother[ilep] << "  stato " << status[ilep]<< "  ndaug " <<ndaug[ilep]<<endl;
  
     if ( fabs(Eta[ilep]) < eta_cut && Pt[ilep] >= pt_cut_min && Pt[ilep] < pt_cut_max )

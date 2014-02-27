@@ -37,7 +37,7 @@ public :
    
    Long64_t nentries;
 
-    // Declaration of leaf types
+   // Declaration of leaf types
    string          *HLTKey;
    vector<string>  *HLTInsideDatasetTriggerNames;
    vector<string>  *HLTOutsideDatasetTriggerNames;
@@ -59,8 +59,11 @@ public :
    Bool_t          passEcalLaserCorrFilter;
    Bool_t          passEcalMaskedCellDRFilter;
    Bool_t          passHBHENoiseFilter;
-   Bool_t          passHcalLaserEventFilter;
+   Bool_t          passLogErrorTooManyClusters;
+   Bool_t          passManyStripClus53X;
+   Bool_t          passTooManyStripClus53X;
    Bool_t          passTrackingFailureFilter;
+   Bool_t          hasVeryForwardPFMuon;
    Bool_t          hasJetWithBadUnc;
    vector<bool>    *ElectronGsfCtfCharge;
    vector<bool>    *ElectronGsfCtfScPixCharge;
@@ -167,6 +170,34 @@ public :
    vector<double>  *ElectronTrkIsoPAT;
    vector<double>  *ElectronVtxDistXY;
    vector<double>  *ElectronVtxDistZ;
+   vector<double>  *GenWElectronEnergy;
+   vector<double>  *GenWElectronEta;
+   vector<double>  *GenWElectronP;
+   vector<double>  *GenWElectronPhi;
+   vector<double>  *GenWElectronPt;
+   vector<double>  *GenWElectronPx;
+   vector<double>  *GenWElectronPy;
+   vector<double>  *GenWElectronPz;
+   vector<double>  *GenWElectronTauVisibleEta;
+   vector<double>  *GenWElectronTauVisiblePhi;
+   vector<double>  *GenWElectronTauVisiblePt;
+   vector<double>  *GenWElectronVX;
+   vector<double>  *GenWElectronVY;
+   vector<double>  *GenWElectronVZ;
+   vector<double>  *GenZElectronEnergy;
+   vector<double>  *GenZElectronEta;
+   vector<double>  *GenZElectronP;
+   vector<double>  *GenZElectronPhi;
+   vector<double>  *GenZElectronPt;
+   vector<double>  *GenZElectronPx;
+   vector<double>  *GenZElectronPy;
+   vector<double>  *GenZElectronPz;
+   vector<double>  *GenZElectronTauVisibleEta;
+   vector<double>  *GenZElectronTauVisiblePhi;
+   vector<double>  *GenZElectronTauVisiblePt;
+   vector<double>  *GenZElectronVX;
+   vector<double>  *GenZElectronVY;
+   vector<double>  *GenZElectronVZ;
    vector<double>  *PDFCTEQWeights;
    vector<double>  *PDFMSTWWeights;
    vector<double>  *PDFNNPDFWeights;
@@ -183,6 +214,34 @@ public :
    vector<double>  *GenMETPhiTrue;
    vector<double>  *GenMETTrue;
    vector<double>  *GenSumETTrue;
+   vector<double>  *GenWMuEnergy;
+   vector<double>  *GenWMuEta;
+   vector<double>  *GenWMuP;
+   vector<double>  *GenWMuPhi;
+   vector<double>  *GenWMuPt;
+   vector<double>  *GenWMuPx;
+   vector<double>  *GenWMuPy;
+   vector<double>  *GenWMuPz;
+   vector<double>  *GenWMuTauVisibleEta;
+   vector<double>  *GenWMuTauVisiblePhi;
+   vector<double>  *GenWMuTauVisiblePt;
+   vector<double>  *GenWMuVX;
+   vector<double>  *GenWMuVY;
+   vector<double>  *GenWMuVZ;
+   vector<double>  *GenZMuEnergy;
+   vector<double>  *GenZMuEta;
+   vector<double>  *GenZMuP;
+   vector<double>  *GenZMuPhi;
+   vector<double>  *GenZMuPt;
+   vector<double>  *GenZMuPx;
+   vector<double>  *GenZMuPy;
+   vector<double>  *GenZMuPz;
+   vector<double>  *GenZMuTauVisibleEta;
+   vector<double>  *GenZMuTauVisiblePhi;
+   vector<double>  *GenZMuTauVisiblePt;
+   vector<double>  *GenZMuVX;
+   vector<double>  *GenZMuVY;
+   vector<double>  *GenZMuVZ;
    vector<double>  *GenParticleEnergy;
    vector<double>  *GenParticleEta;
    vector<double>  *GenParticleP;
@@ -197,48 +256,59 @@ public :
    vector<double>  *GenParticleVX;
    vector<double>  *GenParticleVY;
    vector<double>  *GenParticleVZ;
-   vector<double>  *GenLQTopTauEnergy;
-   vector<double>  *GenLQTopTauEta;
-   vector<double>  *GenLQTopTauP;
-   vector<double>  *GenLQTopTauPhi;
-   vector<double>  *GenLQTopTauPt;
-   vector<double>  *GenLQTopTauPx;
-   vector<double>  *GenLQTopTauPy;
-   vector<double>  *GenLQTopTauPz;
-   vector<double>  *GenLQTopTauTauVisibleEta;
-   vector<double>  *GenLQTopTauTauVisiblePhi;
-   vector<double>  *GenLQTopTauTauVisiblePt;
-   vector<double>  *GenLQTopTauVX;
-   vector<double>  *GenLQTopTauVY;
-   vector<double>  *GenLQTopTauVZ;
-   vector<double>  *GenLQTauEnergy;
-   vector<double>  *GenLQTauEta;
-   vector<double>  *GenLQTauP;
-   vector<double>  *GenLQTauPhi;
-   vector<double>  *GenLQTauPt;
-   vector<double>  *GenLQTauPx;
-   vector<double>  *GenLQTauPy;
-   vector<double>  *GenLQTauPz;
-   vector<double>  *GenLQTauTauVisibleEta;
-   vector<double>  *GenLQTauTauVisiblePhi;
-   vector<double>  *GenLQTauTauVisiblePt;
-   vector<double>  *GenLQTauVX;
-   vector<double>  *GenLQTauVY;
-   vector<double>  *GenLQTauVZ;
+   vector<double>  *GenWTauEnergy;
+   vector<double>  *GenWTauEta;
+   vector<double>  *GenWTauP;
+   vector<double>  *GenWTauPhi;
+   vector<double>  *GenWTauPt;
+   vector<double>  *GenWTauPx;
+   vector<double>  *GenWTauPy;
+   vector<double>  *GenWTauPz;
+   vector<double>  *GenWTauTauVisibleEta;
+   vector<double>  *GenWTauTauVisiblePhi;
+   vector<double>  *GenWTauTauVisiblePt;
+   vector<double>  *GenWTauVX;
+   vector<double>  *GenWTauVY;
+   vector<double>  *GenWTauVZ;
+   vector<double>  *GenZTauEnergy;
+   vector<double>  *GenZTauEta;
+   vector<double>  *GenZTauP;
+   vector<double>  *GenZTauPhi;
+   vector<double>  *GenZTauPt;
+   vector<double>  *GenZTauPx;
+   vector<double>  *GenZTauPy;
+   vector<double>  *GenZTauPz;
+   vector<double>  *GenZTauTauVisibleEta;
+   vector<double>  *GenZTauTauVisiblePhi;
+   vector<double>  *GenZTauTauVisiblePt;
+   vector<double>  *GenZTauVX;
+   vector<double>  *GenZTauVY;
+   vector<double>  *GenZTauVZ;
+   vector<double>  *HPSTauAgainstElectronDeadECALDiscr;
    vector<double>  *HPSTauAgainstElectronLooseDiscr;
    vector<double>  *HPSTauAgainstElectronLooseMVA2Discr;
+   vector<double>  *HPSTauAgainstElectronLooseMVA3Discr;
    vector<double>  *HPSTauAgainstElectronMVA2categoryDiscr;
    vector<double>  *HPSTauAgainstElectronMVA2rawDiscr;
+   vector<double>  *HPSTauAgainstElectronMVA3categoryDiscr;
+   vector<double>  *HPSTauAgainstElectronMVA3rawDiscr;
    vector<double>  *HPSTauAgainstElectronMVADiscr;
    vector<double>  *HPSTauAgainstElectronMediumDiscr;
    vector<double>  *HPSTauAgainstElectronMediumMVA2Discr;
+   vector<double>  *HPSTauAgainstElectronMediumMVA3Discr;
    vector<double>  *HPSTauAgainstElectronTightDiscr;
    vector<double>  *HPSTauAgainstElectronTightMVA2Discr;
+   vector<double>  *HPSTauAgainstElectronTightMVA3Discr;
    vector<double>  *HPSTauAgainstElectronVLooseMVA2Discr;
+   vector<double>  *HPSTauAgainstElectronVTightMVA3Discr;
+   vector<double>  *HPSTauAgainstMuonLoose2Discr;
    vector<double>  *HPSTauAgainstMuonLooseDiscr;
+   vector<double>  *HPSTauAgainstMuonMedium2Discr;
    vector<double>  *HPSTauAgainstMuonMediumDiscr;
+   vector<double>  *HPSTauAgainstMuonTight2Discr;
    vector<double>  *HPSTauAgainstMuonTightDiscr;
    vector<double>  *HPSTauBremsRecoveryEOverPLead;
+   vector<double>  *HPSTauCombinedIsolationDeltaBetaCorr3HitsDiscr;
    vector<double>  *HPSTauDecayModeFindingDiscr;
    vector<double>  *HPSTauEcalStripSumEOverPLead;
    vector<double>  *HPSTauEmFraction;
@@ -254,9 +324,13 @@ public :
    vector<double>  *HPSTauIsolationPFChargedHadrCandsPtSum;
    vector<double>  *HPSTauIsolationPFGammaCandsEtSum;
    vector<double>  *HPSTauLeadPFChargedHadrCandsignedSipt;
+   vector<double>  *HPSTauLeadVtxDistXY;
+   vector<double>  *HPSTauLeadVtxDistZ;
+   vector<double>  *HPSTauLooseCombinedIsolationDeltaBetaCorr3HitsDiscr;
    vector<double>  *HPSTauLooseCombinedIsolationDeltaBetaCorrDiscr;
    vector<double>  *HPSTauLooseIsolationDeltaBetaCorrDiscr;
    vector<double>  *HPSTauLooseIsolationDiscr;
+   vector<double>  *HPSTauLooseIsolationMVA2Discr;
    vector<double>  *HPSTauLooseIsolationMVADiscr;
    vector<double>  *HPSTauMatchedGenJetEta;
    vector<double>  *HPSTauMatchedGenJetPhi;
@@ -265,9 +339,11 @@ public :
    vector<double>  *HPSTauMatchedGenParticlePhi;
    vector<double>  *HPSTauMatchedGenParticlePt;
    vector<double>  *HPSTauMaximumHCALPFClusterEt;
+   vector<double>  *HPSTauMediumCombinedIsolationDeltaBetaCorr3HitsDiscr;
    vector<double>  *HPSTauMediumCombinedIsolationDeltaBetaCorrDiscr;
    vector<double>  *HPSTauMediumIsolationDeltaBetaCorrDiscr;
    vector<double>  *HPSTauMediumIsolationDiscr;
+   vector<double>  *HPSTauMediumIsolationMVA2Discr;
    vector<double>  *HPSTauMediumIsolationMVADiscr;
    vector<double>  *HPSTauPhi;
    vector<double>  *HPSTauPhiLeadCharged;
@@ -286,13 +362,17 @@ public :
    vector<double>  *HPSTauSignalPFNeutrHadrCandsEta;
    vector<double>  *HPSTauSignalPFNeutrHadrCandsPhi;
    vector<double>  *HPSTauSignalPFNeutrHadrCandsPt;
+   vector<double>  *HPSTauTightCombinedIsolationDeltaBetaCorr3HitsDiscr;
    vector<double>  *HPSTauTightCombinedIsolationDeltaBetaCorrDiscr;
    vector<double>  *HPSTauTightIsolationDeltaBetaCorrDiscr;
    vector<double>  *HPSTauTightIsolationDiscr;
+   vector<double>  *HPSTauTightIsolationMVA2Discr;
    vector<double>  *HPSTauTightIsolationMVADiscr;
    vector<double>  *HPSTauVLooseCombinedIsolationDeltaBetaCorrDiscr;
    vector<double>  *HPSTauVLooseIsolationDeltaBetaCorrDiscr;
    vector<double>  *HPSTauVLooseIsolationDiscr;
+   vector<double>  *HPSTauVtxDistXY;
+   vector<double>  *HPSTauVtxDistZ;
    vector<double>  *MuonBackToBackCompatibility;
    vector<double>  *MuonBeamSpotDXY;
    vector<double>  *MuonBeamSpotDXYError;
@@ -379,6 +459,10 @@ public :
    vector<double>  *PFCandPhiLeptLink;
    vector<double>  *PFCandPtLeptLink;
    vector<double>  *PFJetBestVertexTrackAssociationFactor;
+   vector<double>  *PFJetBeta;
+   vector<double>  *PFJetBetaClassic;
+   vector<double>  *PFJetBetaStar;
+   vector<double>  *PFJetBetaStarClassic;
    vector<double>  *PFJetChargedEmEnergyFraction;
    vector<double>  *PFJetChargedHadronEnergyFraction;
    vector<double>  *PFJetChargedMuEnergyFraction;
@@ -495,48 +579,6 @@ public :
    vector<double>  *PhotonXVtxConvPhot;
    vector<double>  *PhotonYVtxConvPhot;
    vector<double>  *PhotonZVtxConvPhot;
-   vector<double>  *SCTauAgainstElectronDiscr;
-   vector<double>  *SCTauAgainstMuonDiscr;
-   vector<double>  *SCTauBremsRecoveryEOverPLead;
-   vector<double>  *SCTauEcalIsolationDiscr;
-   vector<double>  *SCTauEcalIsolationUsingLeadingPionDiscr;
-   vector<double>  *SCTauEcalStripSumEOverPLead;
-   vector<double>  *SCTauEmFraction;
-   vector<double>  *SCTauEt;
-   vector<double>  *SCTauEta;
-   vector<double>  *SCTauEtaLeadCharged;
-   vector<double>  *SCTauEtaetaMoment;
-   vector<double>  *SCTauEtaphiMoment;
-   vector<double>  *SCTauHcal3x3OverPLead;
-   vector<double>  *SCTauHcalMaxOverPLead;
-   vector<double>  *SCTauHcalTotOverPLead;
-   vector<double>  *SCTauIsolationDiscr;
-   vector<double>  *SCTauIsolationPFChargedHadrCandsPtSum;
-   vector<double>  *SCTauIsolationPFGammaCandsEtSum;
-   vector<double>  *SCTauIsolationUsingLeadingPionDiscr;
-   vector<double>  *SCTauLeadPFChargedHadrCandsignedSipt;
-   vector<double>  *SCTauLeadingPionPtCutDiscr;
-   vector<double>  *SCTauLeadingTrackFindingDiscr;
-   vector<double>  *SCTauLeadingTrackPtCutDiscr;
-   vector<double>  *SCTauMatchedGenJetEta;
-   vector<double>  *SCTauMatchedGenJetPhi;
-   vector<double>  *SCTauMatchedGenJetPt;
-   vector<double>  *SCTauMatchedGenParticleEta;
-   vector<double>  *SCTauMatchedGenParticlePhi;
-   vector<double>  *SCTauMatchedGenParticlePt;
-   vector<double>  *SCTauMaximumHCALPFClusterEt;
-   vector<double>  *SCTauPhi;
-   vector<double>  *SCTauPhiLeadCharged;
-   vector<double>  *SCTauPhiphiMoment;
-   vector<double>  *SCTauPt;
-   vector<double>  *SCTauPtLeadCharged;
-   vector<double>  *SCTauTaNCDiscr;
-   vector<double>  *SCTauTaNCfrHalfPercentDiscr;
-   vector<double>  *SCTauTaNCfrOnePercentDiscr;
-   vector<double>  *SCTauTaNCfrQuarterPercentDiscr;
-   vector<double>  *SCTauTaNCfrTenthPercentDiscr;
-   vector<double>  *SCTauTrackIsolationDiscr;
-   vector<double>  *SCTauTrackIsolationUsingLeadingPionDiscr;
    vector<double>  *TCMET;
    vector<double>  *TCMETPhi;
    vector<double>  *TCSumET;
@@ -569,27 +611,48 @@ public :
    vector<int>     *ElectronPassId;
    vector<int>     *ElectronPassIsoPAT;
    vector<int>     *ElectronVtxIndex;
+   vector<int>     *GenWElectronMotherIndex;
+   vector<int>     *GenWElectronNumDaught;
+   vector<int>     *GenWElectronPdgId;
+   vector<int>     *GenWElectronStatus;
+   vector<int>     *GenWElectronTauDecayMode;
+   vector<int>     *GenZElectronMotherIndex;
+   vector<int>     *GenZElectronNumDaught;
+   vector<int>     *GenZElectronPdgId;
+   vector<int>     *GenZElectronStatus;
+   vector<int>     *GenZElectronTauDecayMode;
    vector<int>     *PileUpInteractions;
    vector<int>     *PileUpOriginBX;
+   vector<int>     *GenWMuMotherIndex;
+   vector<int>     *GenWMuNumDaught;
+   vector<int>     *GenWMuPdgId;
+   vector<int>     *GenWMuStatus;
+   vector<int>     *GenWMuTauDecayMode;
+   vector<int>     *GenZMuMotherIndex;
+   vector<int>     *GenZMuNumDaught;
+   vector<int>     *GenZMuPdgId;
+   vector<int>     *GenZMuStatus;
+   vector<int>     *GenZMuTauDecayMode;
    vector<int>     *GenParticleMotherIndex;
    vector<int>     *GenParticleNumDaught;
    vector<int>     *GenParticlePdgId;
    vector<int>     *GenParticleStatus;
    vector<int>     *GenParticleTauDecayMode;
-   vector<int>     *GenLQTopTauMotherIndex;
-   vector<int>     *GenLQTopTauNumDaught;
-   vector<int>     *GenLQTopTauPdgId;
-   vector<int>     *GenLQTopTauStatus;
-   vector<int>     *GenLQTopTauTauDecayMode;
-   vector<int>     *GenLQTauMotherIndex;
-   vector<int>     *GenLQTauNumDaught;
-   vector<int>     *GenLQTauPdgId;
-   vector<int>     *GenLQTauStatus;
-   vector<int>     *GenLQTauTauDecayMode;
+   vector<int>     *GenWTauMotherIndex;
+   vector<int>     *GenWTauNumDaught;
+   vector<int>     *GenWTauPdgId;
+   vector<int>     *GenWTauStatus;
+   vector<int>     *GenWTauTauDecayMode;
+   vector<int>     *GenZTauMotherIndex;
+   vector<int>     *GenZTauNumDaught;
+   vector<int>     *GenZTauPdgId;
+   vector<int>     *GenZTauStatus;
+   vector<int>     *GenZTauTauDecayMode;
    vector<int>     *HPSTauCharge;
    vector<int>     *HPSTauDecayMode;
    vector<int>     *HPSTauIsCaloTau;
    vector<int>     *HPSTauIsPFTau;
+   vector<int>     *HPSTauVtxIndex;
    vector<int>     *MuonBestTrackVtxIndex;
    vector<int>     *MuonCharge;
    vector<int>     *MuonCocktailCharge;
@@ -627,10 +690,6 @@ public :
    vector<int>     *PFJetPassTightID;
    vector<int>     *PFJetPhotonMultiplicity;
    vector<int>     *PhotonNTracksConvPhot;
-   vector<int>     *SCTauCharge;
-   vector<int>     *SCTauDecayMode;
-   vector<int>     *SCTauIsCaloTau;
-   vector<int>     *SCTauIsPFTau;
    vector<int>     *HLTInsideDatasetTriggerPrescales;
    vector<int>     *HLTOutsideDatasetTriggerPrescales;
    vector<int>     *L1PhysBits;
@@ -667,8 +726,11 @@ public :
    TBranch        *b_passEcalLaserCorrFilter;   //!
    TBranch        *b_passEcalMaskedCellDRFilter;   //!
    TBranch        *b_passHBHENoiseFilter;   //!
-   TBranch        *b_passHcalLaserEventFilter;   //!
+   TBranch        *b_passLogErrorTooManyClusters;   //!
+   TBranch        *b_passManyStripClus53X;   //!
+   TBranch        *b_passTooManyStripClus53X;   //!
    TBranch        *b_passTrackingFailureFilter;   //!
+   TBranch        *b_hasVeryForwardPFMuon;   //!
    TBranch        *b_hasJetWithBadUnc;   //!
    TBranch        *b_ElectronGsfCtfCharge;   //!
    TBranch        *b_ElectronGsfCtfScPixCharge;   //!
@@ -775,6 +837,34 @@ public :
    TBranch        *b_ElectronTrkIsoPAT;   //!
    TBranch        *b_ElectronVtxDistXY;   //!
    TBranch        *b_ElectronVtxDistZ;   //!
+   TBranch        *b_GenWElectronEnergy;   //!
+   TBranch        *b_GenWElectronEta;   //!
+   TBranch        *b_GenWElectronP;   //!
+   TBranch        *b_GenWElectronPhi;   //!
+   TBranch        *b_GenWElectronPt;   //!
+   TBranch        *b_GenWElectronPx;   //!
+   TBranch        *b_GenWElectronPy;   //!
+   TBranch        *b_GenWElectronPz;   //!
+   TBranch        *b_GenWElectronTauVisibleEta;   //!
+   TBranch        *b_GenWElectronTauVisiblePhi;   //!
+   TBranch        *b_GenWElectronTauVisiblePt;   //!
+   TBranch        *b_GenWElectronVX;   //!
+   TBranch        *b_GenWElectronVY;   //!
+   TBranch        *b_GenWElectronVZ;   //!
+   TBranch        *b_GenZElectronEnergy;   //!
+   TBranch        *b_GenZElectronEta;   //!
+   TBranch        *b_GenZElectronP;   //!
+   TBranch        *b_GenZElectronPhi;   //!
+   TBranch        *b_GenZElectronPt;   //!
+   TBranch        *b_GenZElectronPx;   //!
+   TBranch        *b_GenZElectronPy;   //!
+   TBranch        *b_GenZElectronPz;   //!
+   TBranch        *b_GenZElectronTauVisibleEta;   //!
+   TBranch        *b_GenZElectronTauVisiblePhi;   //!
+   TBranch        *b_GenZElectronTauVisiblePt;   //!
+   TBranch        *b_GenZElectronVX;   //!
+   TBranch        *b_GenZElectronVY;   //!
+   TBranch        *b_GenZElectronVZ;   //!
    TBranch        *b_PDFCTEQWeights;   //!
    TBranch        *b_PDFMSTWWeights;   //!
    TBranch        *b_PDFNNPDFWeights;   //!
@@ -791,6 +881,34 @@ public :
    TBranch        *b_GenMETPhiTrue;   //!
    TBranch        *b_GenMETTrue;   //!
    TBranch        *b_GenSumETTrue;   //!
+   TBranch        *b_GenWMuEnergy;   //!
+   TBranch        *b_GenWMuEta;   //!
+   TBranch        *b_GenWMuP;   //!
+   TBranch        *b_GenWMuPhi;   //!
+   TBranch        *b_GenWMuPt;   //!
+   TBranch        *b_GenWMuPx;   //!
+   TBranch        *b_GenWMuPy;   //!
+   TBranch        *b_GenWMuPz;   //!
+   TBranch        *b_GenWMuTauVisibleEta;   //!
+   TBranch        *b_GenWMuTauVisiblePhi;   //!
+   TBranch        *b_GenWMuTauVisiblePt;   //!
+   TBranch        *b_GenWMuVX;   //!
+   TBranch        *b_GenWMuVY;   //!
+   TBranch        *b_GenWMuVZ;   //!
+   TBranch        *b_GenZMuEnergy;   //!
+   TBranch        *b_GenZMuEta;   //!
+   TBranch        *b_GenZMuP;   //!
+   TBranch        *b_GenZMuPhi;   //!
+   TBranch        *b_GenZMuPt;   //!
+   TBranch        *b_GenZMuPx;   //!
+   TBranch        *b_GenZMuPy;   //!
+   TBranch        *b_GenZMuPz;   //!
+   TBranch        *b_GenZMuTauVisibleEta;   //!
+   TBranch        *b_GenZMuTauVisiblePhi;   //!
+   TBranch        *b_GenZMuTauVisiblePt;   //!
+   TBranch        *b_GenZMuVX;   //!
+   TBranch        *b_GenZMuVY;   //!
+   TBranch        *b_GenZMuVZ;   //!
    TBranch        *b_GenParticleEnergy;   //!
    TBranch        *b_GenParticleEta;   //!
    TBranch        *b_GenParticleP;   //!
@@ -805,48 +923,59 @@ public :
    TBranch        *b_GenParticleVX;   //!
    TBranch        *b_GenParticleVY;   //!
    TBranch        *b_GenParticleVZ;   //!
-   TBranch        *b_GenLQTopTauEnergy;   //!
-   TBranch        *b_GenLQTopTauEta;   //!
-   TBranch        *b_GenLQTopTauP;   //!
-   TBranch        *b_GenLQTopTauPhi;   //!
-   TBranch        *b_GenLQTopTauPt;   //!
-   TBranch        *b_GenLQTopTauPx;   //!
-   TBranch        *b_GenLQTopTauPy;   //!
-   TBranch        *b_GenLQTopTauPz;   //!
-   TBranch        *b_GenLQTopTauTauVisibleEta;   //!
-   TBranch        *b_GenLQTopTauTauVisiblePhi;   //!
-   TBranch        *b_GenLQTopTauTauVisiblePt;   //!
-   TBranch        *b_GenLQTopTauVX;   //!
-   TBranch        *b_GenLQTopTauVY;   //!
-   TBranch        *b_GenLQTopTauVZ;   //!
-   TBranch        *b_GenLQTauEnergy;   //!
-   TBranch        *b_GenLQTauEta;   //!
-   TBranch        *b_GenLQTauP;   //!
-   TBranch        *b_GenLQTauPhi;   //!
-   TBranch        *b_GenLQTauPt;   //!
-   TBranch        *b_GenLQTauPx;   //!
-   TBranch        *b_GenLQTauPy;   //!
-   TBranch        *b_GenLQTauPz;   //!
-   TBranch        *b_GenLQTauTauVisibleEta;   //!
-   TBranch        *b_GenLQTauTauVisiblePhi;   //!
-   TBranch        *b_GenLQTauTauVisiblePt;   //!
-   TBranch        *b_GenLQTauVX;   //!
-   TBranch        *b_GenLQTauVY;   //!
-   TBranch        *b_GenLQTauVZ;   //!
+   TBranch        *b_GenWTauEnergy;   //!
+   TBranch        *b_GenWTauEta;   //!
+   TBranch        *b_GenWTauP;   //!
+   TBranch        *b_GenWTauPhi;   //!
+   TBranch        *b_GenWTauPt;   //!
+   TBranch        *b_GenWTauPx;   //!
+   TBranch        *b_GenWTauPy;   //!
+   TBranch        *b_GenWTauPz;   //!
+   TBranch        *b_GenWTauTauVisibleEta;   //!
+   TBranch        *b_GenWTauTauVisiblePhi;   //!
+   TBranch        *b_GenWTauTauVisiblePt;   //!
+   TBranch        *b_GenWTauVX;   //!
+   TBranch        *b_GenWTauVY;   //!
+   TBranch        *b_GenWTauVZ;   //!
+   TBranch        *b_GenZTauEnergy;   //!
+   TBranch        *b_GenZTauEta;   //!
+   TBranch        *b_GenZTauP;   //!
+   TBranch        *b_GenZTauPhi;   //!
+   TBranch        *b_GenZTauPt;   //!
+   TBranch        *b_GenZTauPx;   //!
+   TBranch        *b_GenZTauPy;   //!
+   TBranch        *b_GenZTauPz;   //!
+   TBranch        *b_GenZTauTauVisibleEta;   //!
+   TBranch        *b_GenZTauTauVisiblePhi;   //!
+   TBranch        *b_GenZTauTauVisiblePt;   //!
+   TBranch        *b_GenZTauVX;   //!
+   TBranch        *b_GenZTauVY;   //!
+   TBranch        *b_GenZTauVZ;   //!
+   TBranch        *b_HPSTauAgainstElectronDeadECALDiscr;   //!
    TBranch        *b_HPSTauAgainstElectronLooseDiscr;   //!
    TBranch        *b_HPSTauAgainstElectronLooseMVA2Discr;   //!
+   TBranch        *b_HPSTauAgainstElectronLooseMVA3Discr;   //!
    TBranch        *b_HPSTauAgainstElectronMVA2categoryDiscr;   //!
    TBranch        *b_HPSTauAgainstElectronMVA2rawDiscr;   //!
+   TBranch        *b_HPSTauAgainstElectronMVA3categoryDiscr;   //!
+   TBranch        *b_HPSTauAgainstElectronMVA3rawDiscr;   //!
    TBranch        *b_HPSTauAgainstElectronMVADiscr;   //!
    TBranch        *b_HPSTauAgainstElectronMediumDiscr;   //!
    TBranch        *b_HPSTauAgainstElectronMediumMVA2Discr;   //!
+   TBranch        *b_HPSTauAgainstElectronMediumMVA3Discr;   //!
    TBranch        *b_HPSTauAgainstElectronTightDiscr;   //!
    TBranch        *b_HPSTauAgainstElectronTightMVA2Discr;   //!
+   TBranch        *b_HPSTauAgainstElectronTightMVA3Discr;   //!
    TBranch        *b_HPSTauAgainstElectronVLooseMVA2Discr;   //!
+   TBranch        *b_HPSTauAgainstElectronVTightMVA3Discr;   //!
+   TBranch        *b_HPSTauAgainstMuonLoose2Discr;   //!
    TBranch        *b_HPSTauAgainstMuonLooseDiscr;   //!
+   TBranch        *b_HPSTauAgainstMuonMedium2Discr;   //!
    TBranch        *b_HPSTauAgainstMuonMediumDiscr;   //!
+   TBranch        *b_HPSTauAgainstMuonTight2Discr;   //!
    TBranch        *b_HPSTauAgainstMuonTightDiscr;   //!
    TBranch        *b_HPSTauBremsRecoveryEOverPLead;   //!
+   TBranch        *b_HPSTauCombinedIsolationDeltaBetaCorr3HitsDiscr;   //!
    TBranch        *b_HPSTauDecayModeFindingDiscr;   //!
    TBranch        *b_HPSTauEcalStripSumEOverPLead;   //!
    TBranch        *b_HPSTauEmFraction;   //!
@@ -862,9 +991,13 @@ public :
    TBranch        *b_HPSTauIsolationPFChargedHadrCandsPtSum;   //!
    TBranch        *b_HPSTauIsolationPFGammaCandsEtSum;   //!
    TBranch        *b_HPSTauLeadPFChargedHadrCandsignedSipt;   //!
+   TBranch        *b_HPSTauLeadVtxDistXY;   //!
+   TBranch        *b_HPSTauLeadVtxDistZ;   //!
+   TBranch        *b_HPSTauLooseCombinedIsolationDeltaBetaCorr3HitsDiscr;   //!
    TBranch        *b_HPSTauLooseCombinedIsolationDeltaBetaCorrDiscr;   //!
    TBranch        *b_HPSTauLooseIsolationDeltaBetaCorrDiscr;   //!
    TBranch        *b_HPSTauLooseIsolationDiscr;   //!
+   TBranch        *b_HPSTauLooseIsolationMVA2Discr;   //!
    TBranch        *b_HPSTauLooseIsolationMVADiscr;   //!
    TBranch        *b_HPSTauMatchedGenJetEta;   //!
    TBranch        *b_HPSTauMatchedGenJetPhi;   //!
@@ -873,9 +1006,11 @@ public :
    TBranch        *b_HPSTauMatchedGenParticlePhi;   //!
    TBranch        *b_HPSTauMatchedGenParticlePt;   //!
    TBranch        *b_HPSTauMaximumHCALPFClusterEt;   //!
+   TBranch        *b_HPSTauMediumCombinedIsolationDeltaBetaCorr3HitsDiscr;   //!
    TBranch        *b_HPSTauMediumCombinedIsolationDeltaBetaCorrDiscr;   //!
    TBranch        *b_HPSTauMediumIsolationDeltaBetaCorrDiscr;   //!
    TBranch        *b_HPSTauMediumIsolationDiscr;   //!
+   TBranch        *b_HPSTauMediumIsolationMVA2Discr;   //!
    TBranch        *b_HPSTauMediumIsolationMVADiscr;   //!
    TBranch        *b_HPSTauPhi;   //!
    TBranch        *b_HPSTauPhiLeadCharged;   //!
@@ -894,13 +1029,17 @@ public :
    TBranch        *b_HPSTauSignalPFNeutrHadrCandsEta;   //!
    TBranch        *b_HPSTauSignalPFNeutrHadrCandsPhi;   //!
    TBranch        *b_HPSTauSignalPFNeutrHadrCandsPt;   //!
+   TBranch        *b_HPSTauTightCombinedIsolationDeltaBetaCorr3HitsDiscr;   //!
    TBranch        *b_HPSTauTightCombinedIsolationDeltaBetaCorrDiscr;   //!
    TBranch        *b_HPSTauTightIsolationDeltaBetaCorrDiscr;   //!
    TBranch        *b_HPSTauTightIsolationDiscr;   //!
+   TBranch        *b_HPSTauTightIsolationMVA2Discr;   //!
    TBranch        *b_HPSTauTightIsolationMVADiscr;   //!
    TBranch        *b_HPSTauVLooseCombinedIsolationDeltaBetaCorrDiscr;   //!
    TBranch        *b_HPSTauVLooseIsolationDeltaBetaCorrDiscr;   //!
    TBranch        *b_HPSTauVLooseIsolationDiscr;   //!
+   TBranch        *b_HPSTauVtxDistXY;   //!
+   TBranch        *b_HPSTauVtxDistZ;   //!
    TBranch        *b_MuonBackToBackCompatibility;   //!
    TBranch        *b_MuonBeamSpotDXY;   //!
    TBranch        *b_MuonBeamSpotDXYError;   //!
@@ -987,6 +1126,10 @@ public :
    TBranch        *b_PFCandPhiLeptLink;   //!
    TBranch        *b_PFCandPtLeptLink;   //!
    TBranch        *b_PFJetBestVertexTrackAssociationFactor;   //!
+   TBranch        *b_PFJetBeta;   //!
+   TBranch        *b_PFJetBetaClassic;   //!
+   TBranch        *b_PFJetBetaStar;   //!
+   TBranch        *b_PFJetBetaStarClassic;   //!
    TBranch        *b_PFJetChargedEmEnergyFraction;   //!
    TBranch        *b_PFJetChargedHadronEnergyFraction;   //!
    TBranch        *b_PFJetChargedMuEnergyFraction;   //!
@@ -1103,48 +1246,6 @@ public :
    TBranch        *b_PhotonXVtxConvPhot;   //!
    TBranch        *b_PhotonYVtxConvPhot;   //!
    TBranch        *b_PhotonZVtxConvPhot;   //!
-   TBranch        *b_SCTauAgainstElectronDiscr;   //!
-   TBranch        *b_SCTauAgainstMuonDiscr;   //!
-   TBranch        *b_SCTauBremsRecoveryEOverPLead;   //!
-   TBranch        *b_SCTauEcalIsolationDiscr;   //!
-   TBranch        *b_SCTauEcalIsolationUsingLeadingPionDiscr;   //!
-   TBranch        *b_SCTauEcalStripSumEOverPLead;   //!
-   TBranch        *b_SCTauEmFraction;   //!
-   TBranch        *b_SCTauEt;   //!
-   TBranch        *b_SCTauEta;   //!
-   TBranch        *b_SCTauEtaLeadCharged;   //!
-   TBranch        *b_SCTauEtaetaMoment;   //!
-   TBranch        *b_SCTauEtaphiMoment;   //!
-   TBranch        *b_SCTauHcal3x3OverPLead;   //!
-   TBranch        *b_SCTauHcalMaxOverPLead;   //!
-   TBranch        *b_SCTauHcalTotOverPLead;   //!
-   TBranch        *b_SCTauIsolationDiscr;   //!
-   TBranch        *b_SCTauIsolationPFChargedHadrCandsPtSum;   //!
-   TBranch        *b_SCTauIsolationPFGammaCandsEtSum;   //!
-   TBranch        *b_SCTauIsolationUsingLeadingPionDiscr;   //!
-   TBranch        *b_SCTauLeadPFChargedHadrCandsignedSipt;   //!
-   TBranch        *b_SCTauLeadingPionPtCutDiscr;   //!
-   TBranch        *b_SCTauLeadingTrackFindingDiscr;   //!
-   TBranch        *b_SCTauLeadingTrackPtCutDiscr;   //!
-   TBranch        *b_SCTauMatchedGenJetEta;   //!
-   TBranch        *b_SCTauMatchedGenJetPhi;   //!
-   TBranch        *b_SCTauMatchedGenJetPt;   //!
-   TBranch        *b_SCTauMatchedGenParticleEta;   //!
-   TBranch        *b_SCTauMatchedGenParticlePhi;   //!
-   TBranch        *b_SCTauMatchedGenParticlePt;   //!
-   TBranch        *b_SCTauMaximumHCALPFClusterEt;   //!
-   TBranch        *b_SCTauPhi;   //!
-   TBranch        *b_SCTauPhiLeadCharged;   //!
-   TBranch        *b_SCTauPhiphiMoment;   //!
-   TBranch        *b_SCTauPt;   //!
-   TBranch        *b_SCTauPtLeadCharged;   //!
-   TBranch        *b_SCTauTaNCDiscr;   //!
-   TBranch        *b_SCTauTaNCfrHalfPercentDiscr;   //!
-   TBranch        *b_SCTauTaNCfrOnePercentDiscr;   //!
-   TBranch        *b_SCTauTaNCfrQuarterPercentDiscr;   //!
-   TBranch        *b_SCTauTaNCfrTenthPercentDiscr;   //!
-   TBranch        *b_SCTauTrackIsolationDiscr;   //!
-   TBranch        *b_SCTauTrackIsolationUsingLeadingPionDiscr;   //!
    TBranch        *b_TCMET;   //!
    TBranch        *b_TCMETPhi;   //!
    TBranch        *b_TCSumET;   //!
@@ -1177,27 +1278,48 @@ public :
    TBranch        *b_ElectronPassId;   //!
    TBranch        *b_ElectronPassIsoPAT;   //!
    TBranch        *b_ElectronVtxIndex;   //!
+   TBranch        *b_GenWElectronMotherIndex;   //!
+   TBranch        *b_GenWElectronNumDaught;   //!
+   TBranch        *b_GenWElectronPdgId;   //!
+   TBranch        *b_GenWElectronStatus;   //!
+   TBranch        *b_GenWElectronTauDecayMode;   //!
+   TBranch        *b_GenZElectronMotherIndex;   //!
+   TBranch        *b_GenZElectronNumDaught;   //!
+   TBranch        *b_GenZElectronPdgId;   //!
+   TBranch        *b_GenZElectronStatus;   //!
+   TBranch        *b_GenZElectronTauDecayMode;   //!
    TBranch        *b_PileUpInteractions;   //!
    TBranch        *b_PileUpOriginBX;   //!
+   TBranch        *b_GenWMuMotherIndex;   //!
+   TBranch        *b_GenWMuNumDaught;   //!
+   TBranch        *b_GenWMuPdgId;   //!
+   TBranch        *b_GenWMuStatus;   //!
+   TBranch        *b_GenWMuTauDecayMode;   //!
+   TBranch        *b_GenZMuMotherIndex;   //!
+   TBranch        *b_GenZMuNumDaught;   //!
+   TBranch        *b_GenZMuPdgId;   //!
+   TBranch        *b_GenZMuStatus;   //!
+   TBranch        *b_GenZMuTauDecayMode;   //!
    TBranch        *b_GenParticleMotherIndex;   //!
    TBranch        *b_GenParticleNumDaught;   //!
    TBranch        *b_GenParticlePdgId;   //!
    TBranch        *b_GenParticleStatus;   //!
    TBranch        *b_GenParticleTauDecayMode;   //!
-   TBranch        *b_GenLQTopTauMotherIndex;   //!
-   TBranch        *b_GenLQTopTauNumDaught;   //!
-   TBranch        *b_GenLQTopTauPdgId;   //!
-   TBranch        *b_GenLQTopTauStatus;   //!
-   TBranch        *b_GenLQTopTauTauDecayMode;   //!
-   TBranch        *b_GenLQTauMotherIndex;   //!
-   TBranch        *b_GenLQTauNumDaught;   //!
-   TBranch        *b_GenLQTauPdgId;   //!
-   TBranch        *b_GenLQTauStatus;   //!
-   TBranch        *b_GenLQTauTauDecayMode;   //!
+   TBranch        *b_GenWTauMotherIndex;   //!
+   TBranch        *b_GenWTauNumDaught;   //!
+   TBranch        *b_GenWTauPdgId;   //!
+   TBranch        *b_GenWTauStatus;   //!
+   TBranch        *b_GenWTauTauDecayMode;   //!
+   TBranch        *b_GenZTauMotherIndex;   //!
+   TBranch        *b_GenZTauNumDaught;   //!
+   TBranch        *b_GenZTauPdgId;   //!
+   TBranch        *b_GenZTauStatus;   //!
+   TBranch        *b_GenZTauTauDecayMode;   //!
    TBranch        *b_HPSTauCharge;   //!
    TBranch        *b_HPSTauDecayMode;   //!
    TBranch        *b_HPSTauIsCaloTau;   //!
    TBranch        *b_HPSTauIsPFTau;   //!
+   TBranch        *b_HPSTauVtxIndex;   //!
    TBranch        *b_MuonBestTrackVtxIndex;   //!
    TBranch        *b_MuonCharge;   //!
    TBranch        *b_MuonCocktailCharge;   //!
@@ -1235,10 +1357,6 @@ public :
    TBranch        *b_PFJetPassTightID;   //!
    TBranch        *b_PFJetPhotonMultiplicity;   //!
    TBranch        *b_PhotonNTracksConvPhot;   //!
-   TBranch        *b_SCTauCharge;   //!
-   TBranch        *b_SCTauDecayMode;   //!
-   TBranch        *b_SCTauIsCaloTau;   //!
-   TBranch        *b_SCTauIsPFTau;   //!
    TBranch        *b_HLTInsideDatasetTriggerPrescales;   //!
    TBranch        *b_HLTOutsideDatasetTriggerPrescales;   //!
    TBranch        *b_L1PhysBits;   //!

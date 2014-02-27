@@ -7,20 +7,21 @@ SignalPlots::SignalPlots(TString name) {
   h_l2jjmass =       new TH1F("h_l2jjmass_"      + name,"Invariant mass of the two leading jets and second muon",100,0,1000);
   h_lljjmass =       new TH1F("h_lljjmass_"      + name,"Invariant mass of the four particles",200,0,2000);
   h_WandNmass =      new TH2F("h_WandNmass_"     + name,"Invariant mass of the W and the N",200,0,2000,200,0,2000);
+  h_3Dparm =         new TH3F("h_3Dpar_"         + name,"m(lljj) and muon p_{T}_{1} and muon p_{T}_{2}",200,0,2000,60,0,300,60,0,300);
   h_leadingMuonPt =  new TH1F("h_leadingMuonPt_" + name,"leading muon pt",60,0,300);
   h_secondMuonPt =   new TH1F("h_secondMuonPt_"  + name,"secondary muon pt",60,0,300);
   h_leadingJetPt =   new TH1F("h_leadingJetPt_"  + name,"leading jet pt",60,0,300);
   h_secondJetPt =    new TH1F("h_secondJetPt_"   + name,"secondary jet pt",60,0,300);
   h_leadingMuonIso = new TH1F("h_leadingMuonIso_"+ name,"leading muon relIso",40,0,0.4);
   h_secondMuonIso =  new TH1F("h_secondMuonIso_" + name,"secondary muon relIso",40,0,0.4);
-  h_MET =            new TH1F("h_MET_"           + name,"Missing Et",50,0.0,500.0);
+  h_MET =            new TH1F("h_MET_"           + name,"Missing Et",100,0.0,500.0);
   h_paircharge =     new TH1F("h_paircharge_"    + name,"Charge of the muon pair",5,-2,3);
   h_muonseta =       new TH1F("h_muonseta_"      + name,"#eta distribution of the two muons",50,-3,3);
   h_jetseta =        new TH1F("h_jetseta_"       + name,"#eta distribution of the two jets",50,-3,3);
-  h_bTag =           new TH1F("h_bTag_"          + name,"bTag discrimant",100,-2,3);
+  h_bTag =           new TH1F("h_bTag_"          + name,"bTag discrimant",100,-1,3);
   h_cosTheta1 =      new TH1F("h_cosTheta1_"     + name,"cos#theta first muon",100,-1,1);
   h_cosTheta2 =      new TH1F("h_cosTheta2_"     + name,"cos#theta second muon",100,-1,1);
-  h_threeDjet =      new TH1F("h_threeDjet_"     + name,"3D jet distance from vertex",100,0.,1.);
+  h_Njets =          new TH1F("h_Njets_"         + name,"number of jets",10,0,10);
 }
 
 SignalPlots::~SignalPlots() {
@@ -30,6 +31,7 @@ SignalPlots::~SignalPlots() {
   delete h_l2jjmass;
   delete h_lljjmass;
   delete h_WandNmass;
+  delete h_3Dparm;
   delete h_leadingMuonPt;
   delete h_secondMuonPt;
   delete h_leadingJetPt;
@@ -43,11 +45,11 @@ SignalPlots::~SignalPlots() {
   delete h_bTag;
   delete h_cosTheta1;
   delete h_cosTheta2;
-  delete h_threeDjet;
+  delete h_Njets;
 }
 
 void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Jet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok) {
-  dijetmass_tmp=dijetmass=0;
+  dijetmass_tmp=dijetmass=9999.9;
   UInt_t m,n;
   for(UInt_t i=0; i<muons.size()-1; i++)
     for(UInt_t j=i+1; j<muons.size(); j++) {
@@ -56,26 +58,24 @@ void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Jet
           for(UInt_t emme=0; emme<jets.size()-1; emme++)
 	    for(UInt_t enne=1; enne<jets.size(); enne++) {
               dijetmass_tmp = (jets[emme].lorentzVec()+jets[enne].lorentzVec()).M();
+              //dijetmass_tmp = (muons[i].lorentzVec()+muons[j].lorentzVec()+jets[emme].lorentzVec()+jets[enne].lorentzVec()).M();
               if ( fabs(dijetmass_tmp-Mass_W) < fabs(dijetmass-Mass_W) ) {
                 dijetmass = dijetmass_tmp;
                 m = emme;
                 n = enne;
 	      }
 	    }
-          if (dijetmass > 125) goto nogoodW;
+          if (dijetmass > 150) goto nogoodW;
+          //if (dijetmass<50 || dijetmass>120) goto nogoodW;
           h_MET->Fill(MET, weight);
 	  //m=0; n=1;
 	  h_jjmass->Fill( (jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
           h_llmass->Fill( (muons[i].lorentzVec()+muons[j].lorentzVec()).M(),weight);
 	  h_l1jjmass->Fill( (muons[i].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
 	  h_l2jjmass->Fill( (muons[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
-/*
-          cout << "muon px " << muons[j].lorentzVec().Px() << " py " << muons[j].lorentzVec().Py() << " pz " << muons[j].lorentzVec().Pz() << " E " << muons[j].lorentzVec().Energy() << endl;
-cout << "jet1 px " << jets[m].lorentzVec().Px() << " py " << jets[m].lorentzVec().Py() << " pz " << jets[m].lorentzVec().Pz() << " E " << jets[m].lorentzVec().Energy() << endl;
-cout << "jet2 px " << jets[n].lorentzVec().Px() << " py " << jets[n].lorentzVec().Py() << " pz " << jets[n].lorentzVec().Pz() << " E " << jets[n].lorentzVec().Energy() << endl;
-*/
 	  h_lljjmass->Fill( (muons[i].lorentzVec()+muons[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
 	  h_WandNmass->Fill( (muons[i].lorentzVec()+muons[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M() , (muons[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
+          h_3Dparm->Fill( (muons[i].lorentzVec()+muons[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(), muons[i].lorentzVec().Pt(), muons[j].lorentzVec().Pt(), weight); 
 	  h_leadingMuonPt->Fill( muons[i].lorentzVec().Pt(),weight);
 	  h_secondMuonPt->Fill( muons[j].lorentzVec().Pt(),weight);
 	  h_leadingJetPt->Fill( jets[m].lorentzVec().Pt(),weight);
@@ -91,8 +91,7 @@ cout << "jet2 px " << jets[n].lorentzVec().Px() << " py " << jets[n].lorentzVec(
           h_bTag->Fill(jets[n].btag_disc(),weight);
           h_cosTheta1->Fill(cos(muons[i].lorentzVec().Theta()),weight);
           h_cosTheta2->Fill(cos(muons[j].lorentzVec().Theta()),weight);
-	  h_threeDjet->Fill(jets[m].threeD(),weight);
-          h_threeDjet->Fill(jets[n].threeD(),weight);
+          h_Njets->Fill(jets.size(), weight);
 	}
    }
    nogoodW:
@@ -100,7 +99,7 @@ cout << "jet2 px " << jets[n].lorentzVec().Px() << " py " << jets[n].lorentzVec(
 }
 
 void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Lepton>& muonsloose, std::vector<Jet>& jets, Double_t weight, Bool_t ptok, Bool_t ssok) {
-  dijetmass_tmp=dijetmass=0;
+  dijetmass_tmp=dijetmass=9999.9;
   UInt_t m,n;
   for(UInt_t i=0; i<muons.size(); i++)
     for(UInt_t j=0; j<muonsloose.size(); j++) {
@@ -110,14 +109,15 @@ void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Lep
 	    for(UInt_t emme=0; emme<jets.size()-1; emme++)
               for(UInt_t enne=1; enne<jets.size(); enne++) {
                 dijetmass_tmp = (jets[emme].lorentzVec()+jets[enne].lorentzVec()).M();
+                //dijetmass_tmp = (muons[i].lorentzVec()+muonsloose[j].lorentzVec()+jets[emme].lorentzVec()+jets[enne].lorentzVec()).M();
                 if ( fabs(dijetmass_tmp-Mass_W) < fabs(dijetmass-Mass_W) ) {
                   dijetmass = dijetmass_tmp;
                   m = emme;
                   n = enne;
                 }
               }
-            if (dijetmass > 125) goto nogoodW;
-            
+            if (dijetmass > 150) goto nogoodW;
+            //if (dijetmass<50 || dijetmass>120) goto nogoodW; 
             //m=0; n=1;
 	    h_MET->Fill(MET, weight);
 	    h_jjmass->Fill( (jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
@@ -126,6 +126,7 @@ void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Lep
 	    h_l2jjmass->Fill( (muonsloose[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
 	    h_lljjmass->Fill( (muons[i].lorentzVec()+muonsloose[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
 	    h_WandNmass->Fill( (muons[i].lorentzVec()+muonsloose[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M() , (muons[i].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
+            h_3Dparm->Fill( (muons[i].lorentzVec()+muons[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(), muons[i].lorentzVec().Pt(), muonsloose[j].lorentzVec().Pt(), weight);
 	    h_leadingMuonPt->Fill( muons[i].lorentzVec().Pt(),weight);
 	    h_secondMuonPt->Fill( muonsloose[j].lorentzVec().Pt(),weight);
 	    h_leadingJetPt->Fill( jets[m].lorentzVec().Pt(),weight);
@@ -141,21 +142,21 @@ void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Lep
 	    h_bTag->Fill(jets[n].btag_disc(),weight);
 	    h_cosTheta1->Fill(cos(muons[i].lorentzVec().Theta()),weight);
 	    h_cosTheta2->Fill(cos(muons[j].lorentzVec().Theta()),weight);
-            h_threeDjet->Fill(jets[m].threeD(),weight);
-            h_threeDjet->Fill(jets[n].threeD(),weight);
+            h_Njets->Fill(jets.size(), weight);
 	  }
 	  else {
             for(UInt_t emme=0; emme<jets.size()-1; emme++)
               for(UInt_t enne=1; enne<jets.size(); enne++) {
                 dijetmass_tmp = (jets[emme].lorentzVec()+jets[enne].lorentzVec()).M();
+                //dijetmass_tmp = (muons[i].lorentzVec()+muonsloose[j].lorentzVec()+jets[emme].lorentzVec()+jets[enne].lorentzVec()).M();
                 if ( fabs(dijetmass_tmp-Mass_W) < fabs(dijetmass-Mass_W) ) {
                   dijetmass = dijetmass_tmp;
                   m = emme;
                   n = enne;
                 }
               }
-            if (dijetmass > 125) goto nogoodW;
-            
+            if (dijetmass > 150) goto nogoodW;
+            //if (dijetmass<50 || dijetmass>120) goto nogoodW;
             //m=0; n=1;	      
 	    h_MET->Fill(MET, weight);
 	    h_jjmass->Fill( (jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
@@ -164,6 +165,7 @@ void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Lep
 	    h_l2jjmass->Fill( (muons[i].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
 	    h_lljjmass->Fill( (muonsloose[j].lorentzVec()+muons[i].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
 	    h_WandNmass->Fill( (muonsloose[j].lorentzVec()+muons[i].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M() , (muonsloose[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(),weight);
+            h_3Dparm->Fill( (muons[i].lorentzVec()+muons[j].lorentzVec()+jets[m].lorentzVec()+jets[n].lorentzVec()).M(), muonsloose[j].lorentzVec().Pt(), muons[i].lorentzVec().Pt(), weight);
 	    h_leadingMuonPt->Fill( muonsloose[j].lorentzVec().Pt(),weight);
 	    h_secondMuonPt->Fill( muons[i].lorentzVec().Pt(),weight);
 	    h_leadingJetPt->Fill( jets[m].lorentzVec().Pt(),weight);
@@ -179,8 +181,7 @@ void SignalPlots::Fill(Double_t MET, std::vector<Lepton>& muons, std::vector<Lep
 	    h_bTag->Fill(jets[n].btag_disc(),weight);
 	    h_cosTheta1->Fill(cos(muons[i].lorentzVec().Theta()),weight);
 	    h_cosTheta2->Fill(cos(muons[j].lorentzVec().Theta()),weight); 
-            h_threeDjet->Fill(jets[m].threeD(),weight);
-            h_threeDjet->Fill(jets[n].threeD(),weight);
+            h_Njets->Fill(jets.size(), weight);
 	  }
 	}
     }
@@ -195,6 +196,7 @@ void SignalPlots::Write() {
   h_l2jjmass->Write();
   h_lljjmass->Write();
   h_WandNmass->Write();
+  h_3Dparm->Write();
   h_leadingMuonPt->Write();
   h_secondMuonPt->Write();
   h_leadingJetPt->Write();
@@ -208,6 +210,6 @@ void SignalPlots::Write() {
   h_bTag->Write();
   h_cosTheta1->Write();
   h_cosTheta2->Write();
-  h_threeDjet->Write();
+  h_Njets->Write();
 }
 

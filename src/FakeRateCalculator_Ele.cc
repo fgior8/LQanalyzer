@@ -1,6 +1,6 @@
-#include "FakeRateCalculator.h"
+#include "FakeRateCalculator_Ele.h"
 
-FRCalculator::FRCalculator() {
+FRCalculator_Ele::FRCalculator_Ele() {
 /*  
   arraypT = new Double_t [nintpT+1];
   arraypT[0] = 10.;
@@ -25,13 +25,13 @@ FRCalculator::FRCalculator() {
   h_nEventsFO = new TH2F ("h_nEventsFO", "Number of Events FO",ninteta,arrayeta,nintpT,arraypT);
   h_FOrate = new TH2F ("h_FOrate", "FO rate",ninteta,arrayeta,nintpT,arraypT);
 
-  h_TLnum = new MuonPlots("TL_numerator");
-  h_TLden = new MuonPlots("TL_denominator");
+  h_TLnum = new ElectronPlots("TL_numerator");
+  h_TLden = new ElectronPlots("TL_denominator");
 
 }
-FRCalculator::~FRCalculator() {}
+FRCalculator_Ele::~FRCalculator_Ele() {}
 
-void FRCalculator::LoopFR() {
+void FRCalculator_Ele::LoopFR() {
 
   cout << "total number of entries " <<nentries<<endl;
 
@@ -74,13 +74,12 @@ void FRCalculator::LoopFR() {
     if (!passHBHENoiseFilter) continue; // || passHcalLaserEventFilter) continue;
 
     std::vector<TString> triggerslist;
-    triggerslist.push_back("HLT_Mu5_v");
-    triggerslist.push_back("HLT_Mu8_v");
-    triggerslist.push_back("HLT_Mu12_v");
-    triggerslist.push_back("HLT_Mu17_v");
-    triggerslist.push_back("HLT_Mu24_v");
+    triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+    triggerslist.push_back("HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
+    triggerslist.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v");
+    triggerslist.push_back("HLT_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Jet30_v");
 
-//    if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
+    if ( !TriggerSelector(triggerslist, *HLTInsideDatasetTriggerNames, *HLTInsideDatasetTriggerDecisions, *HLTInsideDatasetTriggerPrescales, prescaler) ) continue;
 
     if (MC_pu) {
       /// ***PU reweghting*** ///
@@ -104,65 +103,52 @@ void FRCalculator::LoopFR() {
 
     if (debug) cout<< "good vertex found" <<endl;
 
-    std::vector<Lepton> muonLooseColl;
-    MuonLoose.SetPt(10);
-    MuonLoose.SetEta(2.4); 
-    MuonLoose.SetRelIso(0.40); 
-    MuonLoose.SetChiNdof(50); 
-    MuonLoose.SetBSdxy(0.20);
-    MuonLoose.SetBSdz(0.10); 
-    MuonLoose.SetDeposits(4.0, 6.0);
-    MuonLoose.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonStationMatches, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonLooseColl);
+
+    std::vector<Lepton> electronLooseColl;
+    ElectronLoose.SetPt(20);
+    ElectronLoose.SetEta(2.4);
+    ElectronLoose.SetRelIso(0.40);
+    ElectronLoose.SetBSdxy(0.20);
+    ElectronLoose.SetBSdz(0.10);
+    ElectronLoose.ElectronSelection(*ElectronIsEB, *ElectronIsEE, *ElectronHasTrackerDrivenSeed, *ElectronHasEcalDrivenSeed, *ElectronEta, *ElectronPhi, *ElectronPt, *ElectronEnergy, *ElectronPFPhotonIso03, *ElectronPFNeutralHadronIso03, *ElectronPFChargedHadronIso03, *ElectronCharge, *ElectronGsfCtfScPixCharge, *ElectronMissingHitsEG, *ElectronHasMatchedConvPhot, *ElectronDeltaEtaTrkSC, *ElectronDeltaPhiTrkSC, *ElectronSigmaIEtaIEta, *ElectronHoE, *ElectronCaloEnergy, *ElectronESuperClusterOverP, *ElectronTrackVx, *ElectronTrackVy, *ElectronTrackVz, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), rhoJets, electronLooseColl);
 
     if (debug) cout<< "Event number " <<jentry<<endl;
     
     std::vector<Lepton> muonTightColl;
-    MuonTight.SetPt(10); 
+    MuonTight.SetPt(20); 
     MuonTight.SetEta(2.4); 
-    MuonTight.SetRelIso(0.10); 
+    MuonTight.SetRelIso(0.12); 
     MuonTight.SetChiNdof(10); 
-    MuonTight.SetBSdxy(0.010); 
+    MuonTight.SetBSdxy(0.005); 
     MuonTight.SetBSdz(0.10);
     MuonTight.SetDeposits(4.0,6.0);
     MuonTight.MuonSelection(*MuonIsPF, *MuonIsGlobal, *MuonEta, *MuonPhi, *MuonPt, *MuonPtError, *MuonEnergy, *MuonPFIsoR03ChargedHadron, *MuonPFIsoR03NeutralHadron, *MuonPFIsoR03Photon, *MuonEcalVetoIso, *MuonHcalVetoIso, *MuonCharge, *MuonGlobalTrkValidHits, *MuonTrkPixelHits, *MuonStationMatches, *MuonTrackLayersWithMeasurement, *MuonGlobalChi2, *MuonTrkVx, *MuonTrkVy, *MuonTrkVz, *MuonTrkD0, *MuonTrkD0Error, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), *MuonPFIsoR03PU, muonTightColl);
 
     std::vector<Lepton> electronTightColl;
-    ElectronTight.SetPt(10); 
-    ElectronTight.SetEta(2.5); 
+    ElectronTight.SetPt(20); 
+    ElectronTight.SetEta(2.4); 
     ElectronTight.SetRelIso(0.15); 
     ElectronTight.SetBSdxy(0.01); 
     ElectronTight.SetBSdz(0.10);
     ElectronTight.ElectronSelection(*ElectronIsEB, *ElectronIsEE, *ElectronHasTrackerDrivenSeed, *ElectronHasEcalDrivenSeed, *ElectronEta, *ElectronPhi, *ElectronPt, *ElectronEnergy, *ElectronPFPhotonIso03, *ElectronPFNeutralHadronIso03, *ElectronPFChargedHadronIso03, *ElectronCharge, *ElectronGsfCtfScPixCharge, *ElectronMissingHitsEG, *ElectronHasMatchedConvPhot, *ElectronDeltaEtaTrkSC, *ElectronDeltaPhiTrkSC, *ElectronSigmaIEtaIEta, *ElectronHoE, *ElectronCaloEnergy, *ElectronESuperClusterOverP, *ElectronTrackVx, *ElectronTrackVy, *ElectronTrackVz, VertexX->at(VertexN), VertexY->at(VertexN), VertexZ->at(VertexN), rhoJets, electronTightColl);
     
     std::vector<Jet> jetVetoColl;
-    JetsVeto.SetPt(20);
-    JetsVeto.SetEta(2.5);
+    JetsVeto.SetPt(60); 
+    JetsVeto.SetEta(2.4);
     JetsVeto.JetSelectionLeptonVeto(*PFJetPassLooseID, *PFJetEta, *PFJetPhi, *PFJetPt, *PFJetEnergy, *PFJetNeutralEmEnergyFraction, *PFJetNeutralHadronEnergyFraction, *PFJetChargedEmEnergyFraction, *PFJetChargedHadronEnergyFraction, *PFJetChargedMultiplicity, *PFJetNConstituents, *PFJetCombinedSecondaryVertexBTag, *PFJetClosestVertexWeighted3DSeparation, electronTightColl, muonTightColl, jetVetoColl);
-
-    std::vector<Jet> jetColl;
-    JetsVeto.SetPt(10);
-    JetsVeto.SetEta(3.0);
-    JetsVeto.JetSelection(*PFJetPassLooseID, *PFJetEta, *PFJetPhi, *PFJetPt, *PFJetEnergy, *PFJetNeutralEmEnergyFraction, *PFJetNeutralHadronEnergyFraction, *PFJetChargedEmEnergyFraction, *PFJetChargedHadronEnergyFraction, *PFJetChargedMultiplicity, *PFJetNConstituents, *PFJetCombinedSecondaryVertexBTag, *PFJetClosestVertexWeighted3DSeparation, jetColl);
 
     if (debug) cout<< "done selecting collections" <<endl;
 
     ///// SOME STANDARD PLOTS /////
 
-    if (muonLooseColl.size()>0 && jetVetoColl.size()>0) {
+    if (electronLooseColl.size()>0 && jetVetoColl.size()>0) {
 
-      if (muonTightColl.size()>0) {
+      if (electronTightColl.size()>0) {
         h_MET->Fill(PFMETType01XYCor->at(0), weight);
-        h_MT->Fill( sqrt(2.*muonTightColl[0].lorentzVec().Pt()*PFMETType01XYCor->at(0)* (1 - cos(muonTightColl[0].lorentzVec().Phi()-PFMETPhiType01XYCor->at(0))) ), weight);
+        h_MT->Fill( sqrt(2.*electronTightColl[0].lorentzVec().Pt()*PFMETType01XYCor->at(0)* (1 - cos(electronTightColl[0].lorentzVec().Phi()-PFMETPhiType01XYCor->at(0))) ), weight);
       }
-      if (muonTightColl.size()>=2) {
-        h_prova->Fill( ( muonTightColl[0].lorentzVec() + muonTightColl[1].lorentzVec() ).M(), weight);
-      }
-    }
-
-    if (muonLooseColl.size() > 0 && jetVetoColl.size()>0) {
-      for (UInt_t i=0; i<muonLooseColl.size(); i++) {
-        index=muonLooseColl[i].ilepton();
-        h_muonsLoose->Fill(weight, (Int_t) muonLooseColl.size(), muonLooseColl[i].lorentzVec().Pt(), muonLooseColl[i].eta(), muonLooseColl[i].lorentzVec().Phi(), muonLooseColl[i].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR03Photon->at(index), MuonPFIsoR03ChargedHadron->at(index), MuonPFIsoR03NeutralHadron->at(index), muonLooseColl[i].chiNdof(), muonLooseColl[i].dxy_BS(), muonLooseColl[i].dz_BS(), MuonPFIsoR03PU->at(index), rhoJets);
+      if (electronTightColl.size()>=2) {
+        h_prova->Fill( ( electronTightColl[0].lorentzVec() + electronTightColl[1].lorentzVec() ).M(), weight);
       }
     }
 
@@ -174,12 +160,19 @@ void FRCalculator::LoopFR() {
       }	 
     }
     
-    if (electronTightColl.size() > 0) {
+    if (electronTightColl.size() > 0 && jetVetoColl.size()>0) {
       for (UInt_t i=0; i<electronTightColl.size(); i++) {
 	index=electronTightColl[i].ilepton();
 	h_electrons->Fill(weight, (Int_t) electronTightColl.size(), electronTightColl[i].lorentzVec().Pt(), electronTightColl[i].eta(), electronTightColl[i].lorentzVec().Phi(), electronTightColl[i].charge(), ElectronTrkIsoDR03->at(index), ElectronEcalIsoDR03->at(index), ElectronHcalIsoDR03->at(index), ElectronPFPhotonIso03->at(index), ElectronPFChargedHadronIso03->at(index), ElectronPFNeutralHadronIso03->at(index), electronTightColl[i].dxy_BS(), electronTightColl[i].dz_BS(), rhoJets);
       }	 
     }  
+
+    if (electronLooseColl.size() > 0 && jetVetoColl.size()>0) {
+      for (UInt_t i=0; i<electronLooseColl.size(); i++) {
+        index=electronLooseColl[i].ilepton();
+        h_electronsLoose->Fill(weight, (Int_t) electronLooseColl.size(), electronLooseColl[i].lorentzVec().Pt(), electronLooseColl[i].eta(), electronLooseColl[i].lorentzVec().Phi(), electronLooseColl[i].charge(), ElectronTrkIsoDR03->at(index), ElectronEcalIsoDR03->at(index), ElectronHcalIsoDR03->at(index), ElectronPFPhotonIso03->at(index), ElectronPFChargedHadronIso03->at(index), ElectronPFNeutralHadronIso03->at(index), electronLooseColl[i].dxy_BS(), electronLooseColl[i].dz_BS(), rhoJets);
+      }
+    }
 
     HT = 0.;
     if (jetVetoColl.size() > 0) {
@@ -197,31 +190,25 @@ void FRCalculator::LoopFR() {
 
     if (debug) cout<< "done with the plots starting TL" <<endl;
 
-    if ( ZandWveto(muonLooseColl, PFMETType01XYCor->at(0), PFMETPhiType01XYCor->at(0)) ) continue;
+    if ( ZandWveto(electronLooseColl, PFMETType01XYCor->at(0), PFMETPhiType01XYCor->at(0)) ) continue;
 
 
     ///// FAKE RATES /////
 
     dr=-999.9;
     
-    if (muonLooseColl.size() == 1 && muonTightColl.size() == 1  && jetVetoColl.size() >= 1) {
-      for (UInt_t iii=0; iii<muonTightColl.size(); iii++) {
+    if (electronLooseColl.size() == 1 && electronTightColl.size() == 1  && jetVetoColl.size() >= 1) {
+      for (UInt_t iii=0; iii<electronTightColl.size(); iii++) {
 	for (UInt_t yyy=0; yyy<jetVetoColl.size(); yyy++) {
 	 
-	  dr = muonTightColl[iii].lorentzVec().DeltaR( jetVetoColl[yyy].lorentzVec() );
+	  dr = electronTightColl[iii].lorentzVec().DeltaR( jetVetoColl[yyy].lorentzVec() );
 	  if (dr > 1.0) {
-	    h_nEvents->Fill(fabs(muonTightColl[iii].eta()),muonTightColl[iii].lorentzVec().Pt(), weight);
-            for (UInt_t m=0; m<jetColl.size(); m++) {
-              if (jetColl[m].lorentzVec().DeltaR( muonLooseColl[iii].lorentzVec() ) < 0.3) {
-                index=jetColl[m].ijet();
-                h_jets->Fill( weight, (Int_t) jetColl.size(), jetColl[m].lorentzVec().Pt(), jetColl[m].eta(), jetColl[m].lorentzVec().Phi(), PFJetTrackCountingHighPurBTag->at(index), PFJetJetProbabilityBTag->at(index), jetColl[m].btag_disc(), PFJetClosestVertexWeightedXYSeparation->at(index), PFJetClosestVertexWeightedZSeparation->at(index), PFJetClosestVertexWeighted3DSeparation->at(index) );
-                break;
-              }
-            }
-            if (muonTightColl[iii].lorentzVec().Pt()<=35 || true) {
+	    h_nEvents->Fill(fabs(electronTightColl[iii].eta()),electronTightColl[iii].lorentzVec().Pt(), weight);
+ 
+            if (electronTightColl[iii].lorentzVec().Pt()<=35 || true) {
               h_nVertex1->Fill(numberVertices, weight);
-              index=muonTightColl[iii].ilepton();
-              h_TLnum->Fill(weight, (Int_t) muonTightColl.size(), muonTightColl[iii].lorentzVec().Pt(), muonTightColl[iii].eta(), muonTightColl[iii].lorentzVec().Phi(), muonTightColl[iii].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR03Photon->at(index), MuonPFIsoR03ChargedHadron->at(index), MuonPFIsoR03NeutralHadron->at(index), muonTightColl[iii].chiNdof(), muonTightColl[iii].dxy_BS(), muonTightColl[iii].dz_BS(), MuonPFIsoR03PU->at(index), rhoJets);
+              index=electronTightColl[iii].ilepton();
+              h_TLnum->Fill(weight, (Int_t) electronTightColl.size(), electronTightColl[iii].lorentzVec().Pt(), electronTightColl[iii].eta(), electronTightColl[iii].lorentzVec().Phi(), electronTightColl[iii].charge(), ElectronTrkIsoDR03->at(index), ElectronEcalIsoDR03->at(index), ElectronHcalIsoDR03->at(index), ElectronPFPhotonIso03->at(index), ElectronPFChargedHadronIso03->at(index), ElectronPFNeutralHadronIso03->at(index), electronTightColl[iii].dxy_BS(), electronTightColl[iii].dz_BS(), rhoJets);
             }
 	    
 	    goto fine;
@@ -233,18 +220,18 @@ void FRCalculator::LoopFR() {
     
     if (debug) cout<< "denominator" <<endl;
 
-    if (muonLooseColl.size() == 1 && jetVetoColl.size() >= 1) {
-      for (UInt_t iii=0; iii<muonLooseColl.size(); iii++) {
+    if (electronLooseColl.size() == 1 && jetVetoColl.size() >= 1) {
+      for (UInt_t iii=0; iii<electronLooseColl.size(); iii++) {
 	for (UInt_t yyy=0; yyy<jetVetoColl.size(); yyy++) {
 	  
-	  dr = muonLooseColl[iii].lorentzVec().DeltaR( jetVetoColl[yyy].lorentzVec() );
+	  dr = electronLooseColl[iii].lorentzVec().DeltaR( jetVetoColl[yyy].lorentzVec() );
 	  if (dr > 1.0) {
-	    h_nEventsFO->Fill(fabs(muonLooseColl[iii].eta()),muonLooseColl[iii].lorentzVec().Pt(), weight);
+	    h_nEventsFO->Fill(fabs(electronLooseColl[iii].eta()),electronLooseColl[iii].lorentzVec().Pt(), weight);
     
-            if (muonLooseColl[iii].lorentzVec().Pt()<=35 || true) {
+            if (electronLooseColl[iii].lorentzVec().Pt()<=35 || true) {
               h_nVertex0->Fill(numberVertices, weight);
-              index=muonLooseColl[iii].ilepton();
-              h_TLden->Fill(weight, (Int_t) muonLooseColl.size(), muonLooseColl[iii].lorentzVec().Pt(), muonLooseColl[iii].eta(), muonLooseColl[iii].lorentzVec().Phi(), muonLooseColl[iii].charge(), MuonTrkIso->at(index), MuonEcalIso->at(index), MuonHcalIso->at(index), MuonEcalVetoIso->at(index), MuonHcalVetoIso->at(index), MuonPFIsoR03Photon->at(index), MuonPFIsoR03ChargedHadron->at(index), MuonPFIsoR03NeutralHadron->at(index), muonLooseColl[iii].chiNdof(), muonLooseColl[iii].dxy_BS(), muonLooseColl[iii].dz_BS(), MuonPFIsoR03PU->at(index), rhoJets);
+              index=electronLooseColl[iii].ilepton();
+              h_TLden->Fill(weight, (Int_t) electronLooseColl.size(), electronLooseColl[iii].lorentzVec().Pt(), electronLooseColl[iii].eta(), electronLooseColl[iii].lorentzVec().Phi(), electronLooseColl[iii].charge(), ElectronTrkIsoDR03->at(index), ElectronEcalIsoDR03->at(index), ElectronHcalIsoDR03->at(index), ElectronPFPhotonIso03->at(index), ElectronPFChargedHadronIso03->at(index), ElectronPFNeutralHadronIso03->at(index), electronLooseColl[iii].dxy_BS(), electronLooseColl[iii].dz_BS(), rhoJets);
             }
 	    
 	    goto fineFO;
@@ -280,24 +267,19 @@ void FRCalculator::LoopFR() {
   Dir = outfile->mkdir("Muons");
   outfile->cd( Dir->GetName() );
   h_muons->Write();
-  h_muonsLoose->Write();
-  h_TLden->Write();
-  h_TLnum->Write();
   outfile->cd();
 
   Dir = outfile->mkdir("Electrons");
   outfile->cd( Dir->GetName() );
   h_electrons->Write();
+  h_electronsLoose->Write();
+  h_TLden->Write();
+  h_TLnum->Write();
   outfile->cd();  
 
   Dir = outfile->mkdir("Jets_with_veto");
   outfile->cd( Dir->GetName() );
   h_jets_veto->Write();
-  outfile->cd();
-
-  Dir = outfile->mkdir("Jets_fakes");
-  outfile->cd( Dir->GetName() );
-  h_jets->Write();
   outfile->cd();
 
   outfile->Close();

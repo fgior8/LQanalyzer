@@ -1,9 +1,9 @@
 #!/bin/bash
 
-list=/uscms_data/d2/fgior8/LQntuple_09/CMSSW_5_3_4_LQ/src/code/DataSetList/SingleMu.txt
+list=/uscms_data/d2/fgior8/LQntuple_11/CMSSW_5_3_8_LQ/src/code/DataSetList/QCD_mumu.txt
 a=0
 little=little
-txt=SM.txt
+txt=QCD.txt
 b=0
 for line in `cat $list`
 do
@@ -62,4 +62,3 @@ EOF
 
 #rm "$little$b$txt"
 exit 0
-
